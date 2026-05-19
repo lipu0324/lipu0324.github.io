@@ -11,6 +11,10 @@ permissions:
   pages: write
   id-token: write
 
+environment:
+  name: github-pages
+  url: ${{ steps.deployment.outputs.page_url }}
+
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -35,8 +39,10 @@ jobs:
       - name: Build Hexo
         run: npm run build
 
-      - name: Setup Pages
+      - name: Enable GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

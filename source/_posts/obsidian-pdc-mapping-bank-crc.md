@@ -2,122 +2,162 @@
 title: "PDC映射算法：Bank分组与双CRC候选"
 date: "2025-08-19 14:11:49"
 updated: "2025-08-21 18:55:09"
+obsidian: true
 categories:
   - "网络体系结构"
 tags:
   - "UEC"
   - "PDC"
-  - "Hash"
   - "HLS"
+created: 2025-08-21
 ---
 
-PDC 映射算法要解决的问题是：给定一次 SES 发送请求，如何把它分配到一个合适的 PDC。算法既要尽量均匀，减少热点，也要便于硬件实现。
+## 概述
 
-## 设计目标
+本算法用于对任务与PDC进行映射，本算法综合考虑**硬件实现难度与平均性**，使用双重CRC算法，结合bank分组，尽量保证能够在大负载下减少PDC映射的冲突性。
 
-这个算法考虑三个目标：
+## 代码
 
-- 按目的 FA 分区，先把流量分散到不同 bank。
-- 使用两个独立 hash 候选，降低单点冲突概率。
-- 用轻量队列深度作为选择依据，避免把新请求继续压到拥塞 PDC 上。
+```C++
+    int mux_tx_to_pdc_id(struct ses_tx *tx)
+    {
 
-输入可以抽象为：
+        // 1. 按目的FA分区（banking）
 
-```text
-JobID, destinationFA, trafficclass, deliverymode
+        uint32_t bank = hash_fa(tx->destinationFA) & BANK_MASK;
+
+        // 2. 构造key并计算两次独立哈希
+
+        uint64_t key = ((uint64_t)tx->JobID << JOBID_SHIFT) |
+                       ((uint64_t)tx->destinationFA << DEST_FA_SHIFT) |
+                       ((uint64_t)tx->trafficclass << TC_SHIFT) |
+                       ((uint64_t)tx->deliverymode << DM_SHIFT);
+        uint16_t h1 = crc16_hash(key, CRC16_POLY1, HASH_SEED1);
+        uint16_t h2 = crc16_hash(key, CRC16_POLY2, HASH_SEED2);
+
+        // 3. 映射为bank内索引（使用掩码，确保PDCs_PER_BANK是2的幂）
+
+        uint32_t i1 = h1 & (PDCs_PER_BANK - 1);
+        uint32_t i2 = h2 & (PDCs_PER_BANK - 1);
+
+        // 4. 读取两个候选PDC的轻量状态
+
+        uint8_t q1 = pdc_qdepth[bank][i1];
+        uint8_t q2 = pdc_qdepth[bank][i2];
+
+        // 5. 选择更优者（队列深度更小的）
+
+        uint32_t pick = (q1 <= q2) ? i1 : i2;
+        if (pdc_qdepth[bank][pick] >= MAX_PDC_QUEUE)
+        {
+            log_error("选择的PDC索引超出范围: " + std::to_string(pick));
+            return -1; // 队列深度超出范围
+        }
+
+        // 6. 生成全局PDCID
+
+        uint32_t pdcid = (bank << BANK_SHIFT) | pick;
+
+        // 验证PDCID范围
+        if (pdcid >= MAX_PDC)
+        {
+            log_error("生成的PDCID超出范围: " + std::to_string(pdcid));
+            return -1;
+        }
+        // 更新选中PDC的队列深度计数器（简化版本，实际应该在PDC处理完成后递减）
+        pdc_qdepth[bank][pick]++;
+        log_info("PDC分配算法 - Bank: " + std::to_string(bank) +
+                 ", 候选1: " + std::to_string(i1) + "(深度:" + std::to_string(q1) + ")" +
+                 ", 候选2: " + std::to_string(i2) + "(深度:" + std::to_string(q2) + ")" +
+                 ", 选择: " + std::to_string(pick) +
+                 ", 最终PDCID: " + std::to_string(pdcid));
+        return static_cast<int>(pdcid);
+
+    }
 ```
 
-输出是：
+本代码主要通过以下流程实现PDCID的映射，其输入是`ses_tx`结构体，输出是对应的PDCID
 
-```text
-PDCID
+```mermaid
+flowchart LR
+    A[开始] --> B[记录输入参数日志]
+    B --> C[按FA分区<br/>bank = hash_fa & BANK_MASK]
+    C --> D[构造key<br/>JobID<<24 + FA<<16 + TC<<8 + DM]
+    
+    D --> E[双哈希计算]
+    E --> F[h1 = crc16_hash POLY1]
+    E --> G[h2 = crc16_hash POLY2]
+    
+    F --> H[i1 = h1 & PDCs_PER_BANK-1]
+    G --> I[i2 = h2 & PDCs_PER_BANK-1]
+    
+    H --> J[读取队列深度]
+    I --> J
+    J --> K[q1 = pdc_qdepth bank i1]
+    J --> L[q2 = pdc_qdepth bank i2]
+    
+    K --> M{q1 <= q2?}
+    L --> M
+    M -->|是| N[pick = i1]
+    M -->|否| O[pick = i2]
+    
+    N --> P{队列深度检查<br/>pick >= MAX_QUEUE?}
+    O --> P
+    P -->|是| Q[错误: 队列满] --> R[返回 -1]
+    P -->|否| S[生成PDCID<br/>bank<<SHIFT + pick]
+    
+    S --> T{PDCID范围检查<br/>pdcid >= MAX_PDC?}
+    T -->|是| U[错误: ID超范围] --> V[返回 -1]
+    T -->|否| W[更新队列深度<br/>pdc_qdepth++]
+    
+    W --> X[记录成功日志]
+    X --> Y[返回 pdcid]
+    
+    style A fill:#e1f5fe
+    style Y fill:#e8f5e8
+    style R fill:#ffcdd2
+    style V fill:#ffcdd2
+    style Q fill:#ffebee
+    style U fill:#ffebee
+
 ```
 
-## 算法流程
+通过选择不同的hash种子，可以将四元组映射到某个特定的PDC中进行处理，本算法综合考虑以下特性：
+1. 算法的硬件可实现性：本算法采用的crc16算法在硬件实现方面相对简单。
+``` Verilog
+module CRC16_D16;
+  // polynomial: x^16 + x^12 + x^5 + 1
+  // data width: 16
+  // convention: the first serial bit is D[15]
+  function [15:0] nextCRC16_D16;
 
-核心流程如下：
-
-1. 根据目的 FA 计算 bank。
-2. 拼接四元组形成 hash key。
-3. 使用两组 CRC16 多项式或种子生成两个候选索引。
-4. 读取两个候选 PDC 的队列深度。
-5. 选择队列更短的候选。
-6. 组合 bank 和 bank 内索引，得到全局 PDCID。
-7. 做范围检查，并更新轻量队列计数。
-
-伪代码如下：
-
-```cpp
-int mux_tx_to_pdc_id(struct ses_tx *tx) {
-    uint32_t bank = hash_fa(tx->destinationFA) & BANK_MASK;
-
-    uint64_t key =
-        ((uint64_t)tx->JobID << JOBID_SHIFT) |
-        ((uint64_t)tx->destinationFA << DEST_FA_SHIFT) |
-        ((uint64_t)tx->trafficclass << TC_SHIFT) |
-        ((uint64_t)tx->deliverymode << DM_SHIFT);
-
-    uint16_t h1 = crc16_hash(key, CRC16_POLY1, HASH_SEED1);
-    uint16_t h2 = crc16_hash(key, CRC16_POLY2, HASH_SEED2);
-
-    uint32_t i1 = h1 & (PDCs_PER_BANK - 1);
-    uint32_t i2 = h2 & (PDCs_PER_BANK - 1);
-
-    uint8_t q1 = pdc_qdepth[bank][i1];
-    uint8_t q2 = pdc_qdepth[bank][i2];
-
-    uint32_t pick = (q1 <= q2) ? i1 : i2;
-
-    if (pdc_qdepth[bank][pick] >= MAX_PDC_QUEUE) {
-        return -1;
-    }
-
-    uint32_t pdcid = (bank << BANK_SHIFT) | pick;
-    if (pdcid >= MAX_PDC) {
-        return -1;
-    }
-
-    pdc_qdepth[bank][pick]++;
-    return static_cast<int>(pdcid);
-}
+    input [15:0] Data;
+    input [15:0] crc;
+    reg [15:0] d;
+    reg [15:0] c;
+    reg [15:0] newcrc;
+  begin
+    d = Data;
+    c = crc;
+    newcrc[0] = d[12] ^ d[11] ^ d[8] ^ d[4] ^ d[0] ^ c[0] ^ c[4] ^ c[8] ^ c[11] ^ c[12];
+    newcrc[1] = d[13] ^ d[12] ^ d[9] ^ d[5] ^ d[1] ^ c[1] ^ c[5] ^ c[9] ^ c[12] ^ c[13];
+    newcrc[2] = d[14] ^ d[13] ^ d[10] ^ d[6] ^ d[2] ^ c[2] ^ c[6] ^ c[10] ^ c[13] ^ c[14];
+    newcrc[3] = d[15] ^ d[14] ^ d[11] ^ d[7] ^ d[3] ^ c[3] ^ c[7] ^ c[11] ^ c[14] ^ c[15];
+    newcrc[4] = d[15] ^ d[12] ^ d[8] ^ d[4] ^ c[4] ^ c[8] ^ c[12] ^ c[15];
+    newcrc[5] = d[13] ^ d[12] ^ d[11] ^ d[9] ^ d[8] ^ d[5] ^ d[4] ^ d[0] ^ c[0] ^ c[4] ^ c[5] ^ c[8] ^ c[9] ^ c[11] ^ c[12] ^ c[13];
+    newcrc[6] = d[14] ^ d[13] ^ d[12] ^ d[10] ^ d[9] ^ d[6] ^ d[5] ^ d[1] ^ c[1] ^ c[5] ^ c[6] ^ c[9] ^ c[10] ^ c[12] ^ c[13] ^ c[14];
+    newcrc[7] = d[15] ^ d[14] ^ d[13] ^ d[11] ^ d[10] ^ d[7] ^ d[6] ^ d[2] ^ c[2] ^ c[6] ^ c[7] ^ c[10] ^ c[11] ^ c[13] ^ c[14] ^ c[15];
+    newcrc[8] = d[15] ^ d[14] ^ d[12] ^ d[11] ^ d[8] ^ d[7] ^ d[3] ^ c[3] ^ c[7] ^ c[8] ^ c[11] ^ c[12] ^ c[14] ^ c[15];
+    newcrc[9] = d[15] ^ d[13] ^ d[12] ^ d[9] ^ d[8] ^ d[4] ^ c[4] ^ c[8] ^ c[9] ^ c[12] ^ c[13] ^ c[15];
+    newcrc[10] = d[14] ^ d[13] ^ d[10] ^ d[9] ^ d[5] ^ c[5] ^ c[9] ^ c[10] ^ c[13] ^ c[14];
+    newcrc[11] = d[15] ^ d[14] ^ d[11] ^ d[10] ^ d[6] ^ c[6] ^ c[10] ^ c[11] ^ c[14] ^ c[15];
+    newcrc[12] = d[15] ^ d[8] ^ d[7] ^ d[4] ^ d[0] ^ c[0] ^ c[4] ^ c[7] ^ c[8] ^ c[15];
+    newcrc[13] = d[9] ^ d[8] ^ d[5] ^ d[1] ^ c[1] ^ c[5] ^ c[8] ^ c[9];
+    newcrc[14] = d[10] ^ d[9] ^ d[6] ^ d[2] ^ c[2] ^ c[6] ^ c[9] ^ c[10];
+    newcrc[15] = d[11] ^ d[10] ^ d[7] ^ d[3] ^ c[3] ^ c[7] ^ c[10] ^ c[11];
+    nextCRC16_D16 = newcrc;
+  end
+  endfunction
+endmodule
 ```
-
-## 为什么使用bank
-
-只用一个全局 hash 表会让所有请求竞争同一片资源。先按目的 FA 做 bank 分组，可以在第一步就把不同目标的流量分散开：
-
-```text
-destinationFA -> bank -> bank内PDC候选
-```
-
-这样做的优点是硬件结构清晰，bank 可以对应独立 SRAM 区域、独立队列或独立仲裁路径。
-
-## 为什么使用双候选
-
-双候选本质上是 power of two choices 思路：不是随机选择一个桶，而是随机选择两个候选，再选负载更低的那个。只要队列深度统计足够轻量，就能显著降低热点概率。
-
-在硬件中，这比复杂负载均衡更容易落地：
-
-- 两个 CRC 可以流水化。
-- 两次队列深度读取可并行。
-- 比较逻辑很简单。
-- 不需要全表扫描。
-
-## CRC的硬件可实现性
-
-CRC16 适合作为硬件 hash 的原因是组合逻辑明确，资源可控，延迟可以通过流水线处理。相比软件里常见的复杂 hash，CRC 在 HLS/RTL 中更容易估算时序和面积。
-
-需要注意的是，CRC 多项式和 seed 应该尽量独立，否则两个候选并不真正独立，冲突改善会变弱。
-
-## 边界检查
-
-这个算法至少需要两个检查：
-
-- `pdc_qdepth[bank][pick] >= MAX_PDC_QUEUE`
-- `pdcid >= MAX_PDC`
-
-第一项防止局部队列继续溢出，第二项防止参数配置或位拼接错误导致非法 PDCID。实际实现中还需要考虑计数器何时递减，也就是 PDC 完成处理后的 completion 路径。
-
-## 小结
-
-Bank 分组解决粗粒度分流，双 CRC 候选解决细粒度冲突，队列深度比较解决短期热点。这个方案的优点不是理论上最优，而是足够简单，适合硬件路径实现，并且在高并发场景下比单 hash 映射更稳。
+2. 算法可以尽量消减可能存在的冲突，通过目标FA提前分流，再通过移位和CRC之后的序列应该大体呈现随机性，在很大程度上避免超出PDC的处理能力

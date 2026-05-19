@@ -60,5 +60,3 @@ println(getVerilog(new PassthroughGenerator(20)))</code></pre>
 <pre class="wp-block-preformatted">Elaborating design...<br>Done elaborating.<br>module PassthroughGenerator(<br>  input        clock,<br>  input        reset,<br>  input  [9:0] io_in,<br>  output [9:0] io_out<br>);<br>  assign io_out = io_in; // @[cmd5.sc 6:10]<br>endmodule<br><br>Elaborating design...<br>Done elaborating.<br>module PassthroughGenerator(<br>  input         clock,<br>  input         reset,<br>  input  [19:0] io_in,<br>  output [19:0] io_out<br>);<br>  assign io_out = io_in; // @[cmd5.sc 6:10]<br>endmodule</pre>
 
 <p>是不是出现了两个不同的模块呢，这样相对就很灵活了。</p>
-
-<figure class="wp-block-image size-large"><img src="/uploads/2025/01/1737089841-1-4-683x1024.jpg" alt="" class="wp-image-94"/></figure>

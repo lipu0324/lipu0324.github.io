@@ -128,5 +128,3 @@ for (value &lt;- randomList) {
 println("sum is " + listSum)</code></pre>
 
 <p>看代码就知道他们是干啥的对吧，就这么简单。</p>
-
-<figure class="wp-block-image size-large"><img src="/uploads/2025/01/1736996218-1-22-683x1024.jpg" alt="" class="wp-image-72"/></figure>

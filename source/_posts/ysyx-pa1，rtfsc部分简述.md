@@ -236,5 +236,3 @@ int main(int argc, char *argv&#91;]) {
 </code></pre>
 
 <p>至此，基础框架就是这些了。</p>
-
-<figure class="wp-block-image size-large"><img src="/uploads/2025/02/1738486439-ERO06071-683x1024.jpg" alt="" class="wp-image-104"/></figure>

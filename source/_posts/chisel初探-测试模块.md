@@ -26,5 +26,3 @@ println("SUCCESS!!") // Scala Code: if we get here, our tests passed!
 <p>让我们来逐行解释，首先我们使用一个方法 <code>test</code> 这个方法是专用于测试的，然后我们输入了一个新的实例，即是new Passthrough，然后我们有一个匿名函数，就是c，c指我们new出来的Passthrough，接下来的步骤是这样的，我们对内部的的元素进行输入与输出，poke是给输入指定数值用的，expect是为了检查用的，就这样。</p>
 
 <p>很简单不是吗，至于时序电路的测试，我们未来再说。</p>
-
-<figure class="wp-block-image size-large"><img src="/uploads/2025/01/1737094564-005-683x1024.jpg" alt="" class="wp-image-97"/></figure>

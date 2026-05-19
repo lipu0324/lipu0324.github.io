@@ -79,6 +79,7 @@ theme_config:
   colorscheme: light
   nav:
     home: /
+    about: /about/
     articles: /archives/
     github: https://github.com/lipu0324
   social_links:

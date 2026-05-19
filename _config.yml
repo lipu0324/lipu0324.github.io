@@ -73,7 +73,34 @@ include:
 exclude:
 ignore:
 
-theme: landscape
+theme: cactus
+
+theme_config:
+  colorscheme: light
+  nav:
+    home: /
+    archives: /archives/
+    github: https://github.com/lipu0324
+  social_links:
+    -
+      icon: github
+      link: https://github.com/lipu0324
+  logo:
+    enabled: false
+  favicon:
+    desktop:
+      url:
+      gravatar: false
+    android:
+      url:
+      gravatar: false
+    apple:
+      url:
+      gravatar: false
+  projects_url: https://github.com/lipu0324
+  rss: false
+  cdn:
+    enable: true
 
 deploy:
   type: ''

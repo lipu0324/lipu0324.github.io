@@ -46,21 +46,21 @@ body:after
   right: 0
   left: 0
   z-index: 10000
-  height: 24rem
+  height: 13rem
   pointer-events: none
   content: ""
-  background: linear-gradient(to bottom, transparent 0, rgba(255, 184, 77, .035) 8%, rgba(255, 184, 77, .08) 22%, rgba(255, 184, 77, .15) 42%, rgba(255, 211, 122, .28) 58%, rgba(255, 236, 184, .72) 69%, rgba(255, 236, 184, .46) 75%, rgba(255, 211, 122, .22) 84%, rgba(255, 184, 77, .08) 94%, transparent 100%)
-  opacity: 1
-  transform: translateY(-24rem)
+  background: linear-gradient(to bottom, transparent 0, rgba(201, 143, 59, .025) 10%, rgba(201, 143, 59, .055) 28%, rgba(217, 152, 54, .095) 48%, rgba(255, 184, 77, .18) 64%, rgba(255, 184, 77, .26) 70%, rgba(217, 152, 54, .14) 78%, rgba(201, 143, 59, .06) 90%, transparent 100%)
+  opacity: .82
+  transform: translateY(-13rem)
   animation: crt-scan 12s linear infinite
   animation-delay: -2s
-  filter: blur(.45px)
+  filter: blur(.35px)
   mix-blend-mode: screen
   will-change: transform
 
 @keyframes crt-scan
   0%
-    transform: translateY(-24rem)
+    transform: translateY(-13rem)
 
   100%
     transform: translateY(110vh)
@@ -86,10 +86,10 @@ body > .content
     filter: drop-shadow(0 .04rem .03rem rgba(255, 184, 77, .12))
 
   20%
-    filter: drop-shadow(0 .1rem .07rem rgba(255, 184, 77, .26)) drop-shadow(0 .34rem .28rem rgba(255, 184, 77, .16)) drop-shadow(0 .68rem .55rem rgba(255, 184, 77, .08)) brightness(1.06)
+    filter: drop-shadow(0 .08rem .06rem rgba(217, 152, 54, .2)) drop-shadow(0 .28rem .22rem rgba(201, 143, 59, .11)) drop-shadow(0 .52rem .42rem rgba(201, 143, 59, .055)) brightness(1.035)
 
   27%
-    filter: drop-shadow(0 .14rem .1rem rgba(255, 184, 77, .2)) drop-shadow(0 .44rem .34rem rgba(255, 184, 77, .12)) drop-shadow(0 .82rem .7rem rgba(255, 184, 77, .06)) brightness(1.03)
+    filter: drop-shadow(0 .1rem .08rem rgba(217, 152, 54, .16)) drop-shadow(0 .34rem .28rem rgba(201, 143, 59, .08)) drop-shadow(0 .64rem .52rem rgba(201, 143, 59, .04)) brightness(1.02)
 
   36%
     filter: drop-shadow(0 .06rem .05rem rgba(255, 184, 77, .11))

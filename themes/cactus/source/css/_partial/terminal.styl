@@ -10,8 +10,8 @@ html:after
   width: 1px
   pointer-events: none
   content: ""
-  background: rgba(189, 147, 249, .28)
-  box-shadow: 0 0 18px rgba(189, 147, 249, .18)
+  background: rgba(255, 184, 77, .34)
+  box-shadow: 0 0 18px rgba(255, 184, 77, .22)
 
 html:before
   left: unquote("max(0px, calc(50% - 29rem))")
@@ -20,13 +20,13 @@ html:after
   right: unquote("max(0px, calc(50% - 29rem))")
 
 body
-  background-image: linear-gradient(rgba(248, 248, 242, .035) 1px, transparent 1px)
+  background-image: linear-gradient(rgba(255, 184, 77, .045) 1px, transparent 1px)
   background-size: 100% 4px
   font-variant-ligatures: none
-  text-shadow: 0 0 4px rgba(189, 147, 249, .16)
+  text-shadow: 0 0 5px rgba(255, 184, 77, .24), 0 0 1px rgba(255, 211, 122, .35)
 
 body.max-width
-  box-shadow: 0 0 42px rgba(189, 147, 249, .08)
+  box-shadow: 0 0 42px rgba(255, 184, 77, .09)
 
 body:before
   position: fixed
@@ -37,7 +37,8 @@ body:before
   z-index: 9999
   pointer-events: none
   content: ""
-  background: radial-gradient(circle at 50% 0, rgba(139, 233, 253, .08), transparent 36rem)
+  background: linear-gradient(rgba(255, 184, 77, .018), transparent 13rem)
+  box-shadow: inset 0 0 110px rgba(255, 184, 77, .055)
 
 body > .content
   &:before
@@ -45,14 +46,14 @@ body > .content
     margin-bottom: 1.5rem
     padding: .65rem .9rem
     border: 1px solid $color-border
-    background: rgba(31, 33, 48, .9)
+    background: rgba(0, 0, 0, .92)
     color: $color-accent-1
     content: "lipu0324@github-pages:~$ ./blog"
-    box-shadow: inset 0 0 18px rgba(189, 147, 249, .1)
+    box-shadow: inset 0 0 18px rgba(255, 184, 77, .12)
 
 #header
   padding-bottom: 1rem
-  border-bottom: 1px dashed rgba(189, 147, 249, .42)
+  border-bottom: 1px dashed rgba(255, 184, 77, .42)
 
   h1:before,
   .h1:before
@@ -76,10 +77,10 @@ body > .content
 .content
   a
     color: $color-link
-    underline(5px, rgba(255, 121, 198, .62))
+    underline(5px, rgba(217, 152, 54, .62))
 
     &:hover
-      color: #282a36
+      color: #000
       background: $color-link
       text-shadow: none
 
@@ -98,7 +99,7 @@ body > .content
 .post-list
   .post-item
     padding: .2rem 0
-    border-bottom: 1px dotted rgba(98, 114, 164, .5)
+    border-bottom: 1px dotted rgba(106, 72, 22, .62)
 
     .meta
       color: $color-meta
@@ -116,7 +117,7 @@ body > .content
 article
   header
     padding-bottom: 1rem
-    border-bottom: 1px dashed rgba(189, 147, 249, .34)
+    border-bottom: 1px dashed rgba(255, 184, 77, .34)
 
     .posttitle
       color: $color-accent-1
@@ -132,8 +133,8 @@ article
   .content
     img
     video
-      border: 1px solid rgba(139, 233, 253, .3)
-      box-shadow: 0 0 18px rgba(139, 233, 253, .08)
+      border: 1px solid rgba(255, 184, 77, .28)
+      box-shadow: 0 0 18px rgba(255, 184, 77, .08)
 
     blockquote
       border-left: 2px solid $color-quote
@@ -141,25 +142,25 @@ article
       color: $color-quote
 
 table
-  border: 1px solid rgba(98, 114, 164, .45)
+  border: 1px solid rgba(106, 72, 22, .6)
 
 th
-  background: rgba(189, 147, 249, .1)
+  background: rgba(255, 184, 77, .1)
 
 td
-  border-bottom: 1px dotted rgba(98, 114, 164, .34)
+  border-bottom: 1px dotted rgba(106, 72, 22, .48)
 
 code
-  border-color: rgba(98, 114, 164, .58)
-  background: rgba(31, 33, 48, .9)
-  color: #8be9fd
+  border-color: rgba(106, 72, 22, .74)
+  background: rgba(5, 3, 0, .94)
+  color: $color-accent-2
 
 pre,
 .highlight
-  border: 1px solid rgba(98, 114, 164, .62)
+  border: 1px solid rgba(106, 72, 22, .76)
   border-radius: 0
-  background: rgba(31, 33, 48, .96)
-  box-shadow: inset 0 0 24px rgba(189, 147, 249, .08), 0 0 18px rgba(139, 233, 253, .05)
+  background: rgba(0, 0, 0, .98)
+  box-shadow: inset 0 0 24px rgba(255, 184, 77, .09), 0 0 18px rgba(255, 184, 77, .05)
 
 .highlight
   position: relative
@@ -170,19 +171,63 @@ pre,
     top: .55rem
     left: .9rem
     color: $color-meta
-    content: "● ● ●  terminal"
-    letter-spacing: .08em
+    content: "[ crt tty ]"
+    letter-spacing: 0
 
   .btn-copy
     color: $color-meta
 
 footer
-  border-top: 1px dashed rgba(189, 147, 249, .34)
+  border-top: 1px dashed rgba(255, 184, 77, .34)
 
 ::selection
   background: $color-accent-1
-  color: #282a36
+  color: #000
   text-shadow: none
+
+.highlight
+  color: $color-text
+
+  .code
+    color: $color-text
+
+    .comment,
+    .quote,
+    .meta
+      color: $color-accent-3
+
+    .keyword,
+    .selector-tag,
+    .tag,
+    .name,
+    .title,
+    .section,
+    .type,
+    .doctag
+      color: $color-accent-2
+
+    .attribute,
+    .selector-id,
+    .string,
+    .selector-attr,
+    .selector-pseudo,
+    .addition
+      color: $color-accent-1
+
+    .regexp,
+    .link,
+    .number,
+    .literal,
+    .symbol,
+    .bullet,
+    .variable,
+    .template-variable,
+    .built_in,
+    .builtin-name
+      color: $color-meta
+
+    .deletion
+      color: $color-link
 
 @media (max-width: 480px)
   html:before,

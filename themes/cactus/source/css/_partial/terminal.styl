@@ -46,18 +46,20 @@ body:after
   right: 0
   left: 0
   z-index: 10000
-  height: 8rem
+  height: 7rem
   pointer-events: none
   content: ""
-  background: linear-gradient(to bottom, transparent, rgba(255, 184, 77, .035) 38%, rgba(255, 211, 122, .11) 50%, rgba(255, 184, 77, .035) 62%, transparent)
-  opacity: .72
-  transform: translateY(-9rem)
+  background: linear-gradient(to bottom, transparent 0, rgba(255, 184, 77, .035) 31%, rgba(255, 184, 77, .14) 47%, rgba(255, 224, 150, .42) 50%, rgba(255, 184, 77, .14) 53%, rgba(255, 184, 77, .035) 69%, transparent 100%)
+  opacity: .92
+  transform: translateY(-8rem)
   animation: crt-scan 12s linear infinite
+  animation-delay: -2s
+  mix-blend-mode: screen
   will-change: transform
 
 @keyframes crt-scan
   0%
-    transform: translateY(-9rem)
+    transform: translateY(-8rem)
 
   100%
     transform: translateY(110vh)

@@ -1,0 +1,179 @@
+html
+  border-top: 2px solid $color-accent-1
+
+body
+  background-image: linear-gradient(rgba(248, 248, 242, .035) 1px, transparent 1px)
+  background-size: 100% 4px
+  font-variant-ligatures: none
+  text-shadow: 0 0 4px rgba(189, 147, 249, .16)
+
+body.max-width
+  border-right: 1px solid rgba(189, 147, 249, .22)
+  border-left: 1px solid rgba(189, 147, 249, .22)
+  box-shadow: 0 0 42px rgba(189, 147, 249, .12)
+
+body:before
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 9999
+  pointer-events: none
+  content: ""
+  background: radial-gradient(circle at 50% 0, rgba(139, 233, 253, .08), transparent 36rem)
+
+body > .content
+  &:before
+    display: block
+    margin-bottom: 1.5rem
+    padding: .65rem .9rem
+    border: 1px solid $color-border
+    background: rgba(31, 33, 48, .9)
+    color: $color-accent-1
+    content: "lipu0324@github-pages:~$ ./blog"
+    box-shadow: inset 0 0 18px rgba(189, 147, 249, .1)
+
+#header
+  padding-bottom: 1rem
+  border-bottom: 1px dashed rgba(189, 147, 249, .42)
+
+  h1:before,
+  .h1:before
+    margin-right: .45rem
+    color: $color-accent-1
+    content: "$"
+
+  #nav
+    text-transform: uppercase
+
+    ul
+      a
+        color: $color-meta
+
+        &:before
+          content: "["
+
+        &:after
+          content: "]"
+
+.content
+  a
+    color: $color-link
+    underline(5px, rgba(255, 121, 198, .62))
+
+    &:hover
+      color: #282a36
+      background: $color-link
+      text-shadow: none
+
+  h1, .h1
+    color: $color-accent-1
+
+  h2, .h2
+    color: $color-accent-2
+
+    &:before
+      color: $color-accent-1
+
+  h3
+    color: $color-link
+
+.post-list
+  .post-item
+    padding: .2rem 0
+    border-bottom: 1px dotted rgba(98, 114, 164, .5)
+
+    .meta
+      color: $color-meta
+
+      &:before
+        margin-right: .4rem
+        color: $color-accent-1
+        content: "log"
+
+    span:last-child:before
+      margin-right: .4rem
+      color: $color-accent-1
+      content: ">"
+
+article
+  header
+    padding-bottom: 1rem
+    border-bottom: 1px dashed rgba(189, 147, 249, .34)
+
+    .posttitle
+      color: $color-accent-1
+
+      &:before
+        margin-right: .55rem
+        color: $color-link
+        content: "$ cat"
+
+    .meta *
+      color: $color-meta
+
+  .content
+    img
+    video
+      border: 1px solid rgba(139, 233, 253, .3)
+      box-shadow: 0 0 18px rgba(139, 233, 253, .08)
+
+    blockquote
+      border-left: 2px solid $color-quote
+      background: rgba(255, 204, 102, .05)
+      color: $color-quote
+
+table
+  border: 1px solid rgba(98, 114, 164, .45)
+
+th
+  background: rgba(189, 147, 249, .1)
+
+td
+  border-bottom: 1px dotted rgba(98, 114, 164, .34)
+
+code
+  border-color: rgba(98, 114, 164, .58)
+  background: rgba(31, 33, 48, .9)
+  color: #8be9fd
+
+pre,
+.highlight
+  border: 1px solid rgba(98, 114, 164, .62)
+  border-radius: 0
+  background: rgba(31, 33, 48, .96)
+  box-shadow: inset 0 0 24px rgba(189, 147, 249, .08), 0 0 18px rgba(139, 233, 253, .05)
+
+.highlight
+  position: relative
+  padding-top: 2.4rem
+
+  &:before
+    position: absolute
+    top: .55rem
+    left: .9rem
+    color: $color-meta
+    content: "● ● ●  terminal"
+    letter-spacing: .08em
+
+  .btn-copy
+    color: $color-meta
+
+footer
+  border-top: 1px dashed rgba(189, 147, 249, .34)
+
+::selection
+  background: $color-accent-1
+  color: #282a36
+  text-shadow: none
+
+@media (max-width: 480px)
+  body.max-width
+    border-right: 0
+    border-left: 0
+
+  .content:before
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap

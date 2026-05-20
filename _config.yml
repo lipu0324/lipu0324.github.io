@@ -1,6 +1,6 @@
 title: lipu0324's Blog
-subtitle: ''
-description: ''
+subtitle: 'notes from the shell'
+description: 'lipu0324@blog:~$ cat notes.md'
 keywords:
 author: lipu0324
 language: zh-CN
@@ -76,10 +76,13 @@ ignore:
 theme: cactus
 
 theme_config:
-  colorscheme: light
+  colorscheme: terminal
+  page_width: 58
   posts_overview:
     show_all_posts: true
     sort_updated: false
+  post:
+    show_updated: true
   nav:
     home: /
     about: /about/

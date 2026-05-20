@@ -1,6 +1,24 @@
 html
   border-top: 2px solid $color-accent-1
 
+html:before,
+html:after
+  position: fixed
+  top: 0
+  bottom: 0
+  z-index: 9998
+  width: 1px
+  pointer-events: none
+  content: ""
+  background: rgba(189, 147, 249, .28)
+  box-shadow: 0 0 18px rgba(189, 147, 249, .18)
+
+html:before
+  left: unquote("max(0px, calc(50% - 29rem))")
+
+html:after
+  right: unquote("max(0px, calc(50% - 29rem))")
+
 body
   background-image: linear-gradient(rgba(248, 248, 242, .035) 1px, transparent 1px)
   background-size: 100% 4px
@@ -8,9 +26,7 @@ body
   text-shadow: 0 0 4px rgba(189, 147, 249, .16)
 
 body.max-width
-  border-right: 1px solid rgba(189, 147, 249, .22)
-  border-left: 1px solid rgba(189, 147, 249, .22)
-  box-shadow: 0 0 42px rgba(189, 147, 249, .12)
+  box-shadow: 0 0 42px rgba(189, 147, 249, .08)
 
 body:before
   position: fixed
@@ -169,6 +185,10 @@ footer
   text-shadow: none
 
 @media (max-width: 480px)
+  html:before,
+  html:after
+    display: none
+
   body.max-width
     border-right: 0
     border-left: 0

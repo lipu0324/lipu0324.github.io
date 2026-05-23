@@ -1,11 +1,13 @@
 ---
 title: "RDMA基本对象与InfiniBand、RoCE、iWARP对比"
 date: "2026-05-18 22:01:23"
-updated: "2026-05-19 20:53:23"
+updated: "2026-05-20 10:56:05"
 obsidian: true
 categories:
   - "网络体系结构"
 tags:
+  - "技能学习"
+  - "网络体系结构"
   - "RDMA"
   - "InfiniBand"
   - "RoCE"
@@ -61,3 +63,53 @@ iWARP 使用 TCP 拥塞控制：
 优点是成熟稳定。
 缺点是 TCP 的语义和丢包恢复可能带来更高尾延迟。
 
+## 4. DPU相关知识
+Data Process Unit，数据处理器，我们一般认为他放在智能网卡上，将本来由主机CPU处理的内容移动到网卡侧的处理器上，用于减轻服务器处理器的压力（大部分的处理器压力来自于上下文切换，进程太多反而利用率下降的厉害）
+传统服务器里，很多基础设施工作都在主机 CPU 上做：
+- 虚拟交换机转发
+- VXLAN/Geneve overlay 封装解封装
+- 安全组 / ACL / 防火墙
+- TLS/IPsec 加解密
+- 存储协议处理
+- 虚拟机 virtio 数据面
+- 容器网络转发
+- 流量监控和采样
+- 负载均衡
+- RDMA/网络协议处理
+问题是这些任务会消耗 CPU，并且和业务 workload 抢资源。
+### 4.1 DPU一般卸载什么东西
+**网络卸载**
+- L2/L3 转发
+- vSwitch / OVS
+- VXLAN / Geneve overlay
+- tunnel encapsulation / decapsulation
+- ACL / security group
+- NAT
+- load balancing
+- QoS / rate limiting
+- flow steering
+- packet filtering
+- telemetry / flow sampling
+- SR-IOV / vDPA / virtio-net 数据面
+好处是主机CPU更少做包处理，网络延迟更稳定，虚拟化网络的吞吐更高。
+**存储卸载**
+- NVMe-oF
+- virtio-blk / virtio-scsi
+- vhost 数据面
+- 分布式块存储客户端
+- 存储加密
+- 校验和
+- 压缩/解压
+- erasure coding 的部分计算
+- 数据复制和镜像
+好处是主机 CPU 不再大量参与云盘 IO，IO 抖动更小，也更容易做隔离。
+**安全卸载**
+- 防火墙
+- 安全组
+- micro-segmentation
+- IDS/IPS 的部分数据面
+- TLS 加解密
+- IPsec / MACsec
+- 密钥隔离
+- zero-trust gateway
+- DDoS 初步过滤

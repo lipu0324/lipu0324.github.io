@@ -6,9 +6,11 @@ obsidian: true
 categories:
   - "网络体系结构"
 tags:
-  - UEC
-  - 论文阅读
-created: 2025-07-23
+  - "UEC"
+  - "论文阅读"
+  - "网络体系结构"
+  - "PDS"
+  - "PDC"
 ---
 ## 总览
 ![[Pasted image 20250723150037.png]]

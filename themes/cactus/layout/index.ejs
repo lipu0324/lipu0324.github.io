@@ -1,64 +1,127 @@
-<section id="about" class="p-note">
-  <% if (config.description) { %>
-    <%- markdown(config.description) %>
-  <% } %>
-  <% if (theme.social_links) { %>
-    <p>
-      <%= __('index.find_me_on') %>
-      <% var nb_links = theme.social_links.length %>
-      <% var i = 0 %>
-      <% for(var {label, icon, link} of theme.social_links) { %>
-        <% var title = label || icon %>
-        <% if (icon == 'mail') { %>
-          <a class="icon u-email" target="_blank" rel="noopener" href="<%- link %>" aria-label="<%- title %>" title="<%- title %>">
-            <i class="fa-solid fa-envelope"></i><!--
-      ---></a>
-        <% } else if (icon == 'rss') { %>
-          <a class="icon" target="_blank" rel="noopener" href="<%- link %>" aria-label="<%- title %>" title="<%- title %>">
-            <i class="fa-solid fa-rss"></i>
-          </a>
-        <% } else { %>
-          <a class="icon u-url" target="_blank" rel="noopener me" href="<%- url_for(link) %>" aria-label="<%- title %>" title="<%- title %>">
-            <i class="fa-brands fa-<%= icon %>"></i><!--
-      ---></a><!--
-    ---><% } %><!--
-    ---><%= ( nb_links > 0 && i < nb_links-1 ?
-            ( i == nb_links-2 ? ' '+__('index.enum_and')+' '
-            : __('index.enum_comma')+' ' )
-            : '.' ) %>
-        <% i+=1 %>
-      <% } %>
-    </p>
-  <% } %>
+<div class="runhead">
+  <span>LIPU-0324</span>
+  <span class="mid">Technical Reference Manual</span>
+  <span class="pn" style="color:#c0391b">Rev 2.0</span>
+</div>
+
+<div class="titleblock">
+  <div class="stamp">已开源</div>
+  <p class="doc-kind">Technical Reference Manual · 技术参考手册</p>
+  <h1 class="part p-name">LIPU<span class="suffix">-0324</span></h1>
+  <p class="subtitle">个人技术笔记库：芯片、网络与 GPU</p>
+  <p class="subtitle-en">Personal notes on silicon, interconnects &amp; GPUs</p>
+  <div class="doc-meta">
+    <span>DOC NO. <b>LP-0324-TRM</b></span>
+    <span>REV <b>2.0</b></span>
+    <span>DATE <b><%= date(new Date(), 'YYYY-MM-DD') %></b></span>
+    <span>REGS <b><%= site.posts.length %></b></span>
+  </div>
+</div>
+
+<section class="manual overview">
+  <h2 class="sec"><span class="no">1.</span>DEVICE OVERVIEW<span class="cn">器件概述</span><span class="rule"></span></h2>
+  <p>本手册汇编 <b><%= config.author %></b> 自 2016 年以来的技术笔记，内容覆盖 <b>Chisel / FPGA</b> 硬件设计、<b>CUDA / GPU</b> 并行计算、<b>RDMA / InfiniBand</b> 数据中心网络与 <b>C++</b> 系统编程。全部条目按寄存器偏移编址，可通过表 3-1 直接寻址。</p>
 </section>
 
-<section id="writing">
-  <span class="h1"><a href="<%- url_for(theme.nav.articles) %>"><%= __('index.articles') %></a></span>
-  <% if (theme.tags_overview && site.tags.length) { %>
-  <span class="h2"><%= __('index.topics') %></span>
-  <span class="widget tagcloud">
-    <%- tagcloud(theme.tags_overview) %>
-  </span>
-  <span class="h2"><%= __('index.most_recent') %></span>
-  <% } %>
-  <ul class="post-list">
-    <% var field_sort = theme.posts_overview.sort_updated ? 'updated' : 'date' %>
-    <% if (theme.posts_overview.show_all_posts) { %>
-      <% var show_posts = page.posts.sort(field_sort, 'desc') %>
-    <% } else { %>
-      <% var show_posts = site.posts.sort(field_sort, 'desc').limit(theme.posts_overview.post_count || 5) %>
-    <% } %>
-    <% show_posts.each(function(post, i){ %>
-      <li class="post-item">
-        <%- partial('_partial/post/date', { post: post, class_name: 'meta' }) %>
-        <span><%- partial('_partial/post/title', { post: post, index: true, class_name: '' }) %></span>
-      </li>
-    <% }); %>
-  </ul>
-  <% if (theme.posts_overview.show_all_posts) { %>
-    <%- partial('_partial/pagination') %>
-  <% } %>
+<section class="manual">
+  <h2 class="sec"><span class="no">2.</span>DEVICE IDENTIFICATION<span class="cn">器件标识</span><span class="rule"></span></h2>
+  <div class="ident">
+    <div class="bitreg-wrap">
+      <p class="doc-caption">Fig 2-1 · DEVICE_ID register (RO, addr 0xFFFF)</p>
+      <div class="bitreg">
+        <span class="bits" style="left:0">31</span>
+        <span class="bits" style="left:calc(50% - 2px)">16</span>
+        <span class="bits" style="left:calc(50% + 24%)">8</span>
+        <span class="bits" style="right:0">0</span>
+        <div class="field f-part">
+          <span class="fname">PART_NUM</span>
+          <span class="fval">0x0324</span>
+        </div>
+        <div class="field f-ver">
+          <span class="fname">MAJOR</span>
+          <span class="fval">0x02</span>
+        </div>
+        <div class="field f-rev">
+          <span class="fname">MINOR</span>
+          <span class="fval">0x00</span>
+        </div>
+      </div>
+    </div>
+    <div class="specs">
+      <div class="row"><span class="k">Entries</span><span class="v red"><%= site.posts.length %></span></div>
+      <div class="row"><span class="k">First shipped</span><span class="v"><%= (theme.copyright && theme.copyright.start_year) || '2016' %></span></div>
+      <div class="row"><span class="k">Focus</span><span class="v">Silicon / GPU / RDMA</span></div>
+      <div class="row"><span class="k">Toolchain</span><span class="v">Obsidian → Hexo</span></div>
+      <div class="row"><span class="k">Host</span><span class="v">GitHub Pages</span></div>
+      <div class="row"><span class="k">RoHS</span><span class="v">Compliant</span></div>
+    </div>
+  </div>
 </section>
+
+<section class="manual">
+  <h2 class="sec"><span class="no">3.</span>REGISTER MAP<span class="cn">寄存器映射 · 全部 <%= site.posts.length %> 条</span><span class="rule"></span></h2>
+  <p class="doc-caption">Table 3-1 · Post index, read-only, 8-byte stride</p>
+  <table class="doc regmap">
+    <thead>
+      <tr><th>Offset</th><th>Description</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      <% var reg_limit = 15 %>
+      <% var all_posts = site.posts.sort('date', 'desc') %>
+      <% var total = site.posts.length %>
+      <% all_posts.limit(reg_limit).each(function(post, i) { %>
+        <tr>
+          <td class="off">0x<%= ('000' + (i * 8).toString(16).toUpperCase()).slice(-3) %></td>
+          <td><a href="<%- url_for(post.path) %>"><%= post.title || 'Untitled' %></a></td>
+          <td class="date"><%= date(post.date, config.date_format) %></td>
+        </tr>
+      <% }); %>
+      <% if (total > reg_limit) { %>
+        <tr>
+          <td class="off">…</td>
+          <td><a class="plain" href="<%- url_for(theme.nav.articles) %>"><%= total - reg_limit %> more entries in the full map →</a></td>
+          <td class="date"></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</section>
+
+<section class="manual">
+  <h2 class="sec"><span class="no">4.</span>ORDERING INFORMATION<span class="cn">订购信息</span><span class="rule"></span></h2>
+  <p class="doc-caption">Table 4-1 · Available packages</p>
+  <table class="doc ordering">
+    <% var pn_map = { about: 'LP-0324-ABT', articles: 'LP-0324-ARC', github: 'LP-0324-GH' } %>
+    <% var desc_map = { about: 'Vendor information', articles: 'Full register archive, paged', github: 'Source & issue tracker' } %>
+    <% for (var i in theme.nav) { %>
+      <% if (theme.nav[i] === '/') { continue } %>
+      <tr>
+        <td class="pn"><%= pn_map[i] || ('LP-0324-' + i.toUpperCase()) %></td>
+        <td><a class="plain" href="<%- url_for(theme.nav[i]) %>"><%= theme.nav[i].replace(/^https?:\/\//, '') %></a></td>
+        <td class="desc"><%= desc_map[i] || '' %></td>
+      </tr>
+    <% } %>
+  </table>
+</section>
+
+<section class="manual">
+  <h2 class="sec"><span class="no">5.</span>REVISION HISTORY<span class="cn">修订历史</span><span class="rule"></span></h2>
+  <p class="doc-caption">Table 5-1 · Document revisions</p>
+  <table class="doc revhist" style="max-width:640px">
+    <thead>
+      <tr><th>Rev</th><th>Date</th><th>Description</th></tr>
+    </thead>
+    <tr><td class="off">1.0</td><td class="date">2016</td><td>Initial release</td></tr>
+    <tr><td class="off">1.1</td><td class="date">2025-06</td><td>Terminal / CRT skin applied</td></tr>
+    <tr><td class="off">2.0</td><td class="date">2026-07</td><td>Recharacterized as Technical Reference Manual</td></tr>
+  </table>
+</section>
+
+<div class="runfoot">
+  <span>© 2016–<%= new Date().getFullYear() %> <%= config.author %></span>
+  <span class="mid">LIPU-0324 TRM · Rev 2.0</span>
+  <span class="pn">Page 1 / 1</span>
+</div>
 
 <% if (site.data.projects) { %>
 <section id="projects">

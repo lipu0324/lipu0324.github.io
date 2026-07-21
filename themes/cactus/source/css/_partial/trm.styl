@@ -1,0 +1,533 @@
+// -----------------------------------------------------------
+// TRM — Technical Reference Manual visual system
+// -----------------------------------------------------------
+
+body
+  background-image: linear-gradient(rgba(23, 20, 15, .028) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 20, 15, .028) 1px, transparent 1px)
+  background-size: 28px 28px
+
+::selection
+  background: $color-accent-1
+  color: $color-paper
+
+// -----------------------------------------------------------
+// Running head / foot
+// -----------------------------------------------------------
+.runhead, .runfoot
+  display: flex
+  justify-content: space-between
+  padding: 10px 0
+  font-family: $font-family-mono
+  font-size: 11px
+  letter-spacing: .08em
+  color: $color-meta
+  text-transform: uppercase
+
+.runhead
+  margin-bottom: 3.5rem
+  border-bottom: 2px solid $color-ink
+
+.runfoot
+  margin-top: 4rem
+  border-top: 2px solid $color-ink
+
+  .pn
+    color: $color-accent-1
+    font-weight: 500
+
+// -----------------------------------------------------------
+// Title block (homepage)
+// -----------------------------------------------------------
+.titleblock
+  position: relative
+  margin-bottom: 4rem
+
+.doc-kind
+  margin-bottom: 12px
+  font-family: $font-family-mono
+  font-size: 12px
+  letter-spacing: .28em
+  color: $color-accent-1
+  text-transform: uppercase
+
+h1.part
+  margin-bottom: 18px
+  font-family: $font-family-display
+  font-size: 92px
+  font-weight: 700
+  line-height: .95
+  letter-spacing: .01em
+
+  .suffix
+    color: $color-accent-1
+
+.subtitle
+  margin-bottom: 6px
+  font-size: 20px
+  font-weight: 700
+
+.subtitle-en
+  font-family: $font-family-mono
+  font-size: 12px
+  letter-spacing: .18em
+  color: $color-meta
+  text-transform: uppercase
+
+.doc-meta
+  display: flex
+  gap: 36px
+  margin-top: 26px
+  padding-top: 12px
+  border-top: 1px solid $color-hairline
+  font-family: $font-family-mono
+  font-size: 12px
+  color: $color-meta
+
+  b
+    color: $color-ink
+    font-weight: 500
+
+.stamp
+  position: absolute
+  top: 8px
+  right: 0
+  padding: 8px 14px
+  border: 3px double $color-accent-1
+  color: $color-accent-1
+  font-size: 13px
+  font-weight: 700
+  letter-spacing: .2em
+  opacity: .85
+  transform: rotate(6deg)
+
+// -----------------------------------------------------------
+// Manual sections
+// -----------------------------------------------------------
+section.manual
+  margin-bottom: 4rem
+
+h2.sec
+  display: flex
+  align-items: baseline
+  gap: 18px
+  margin-bottom: 28px
+  font-family: $font-family-display
+  font-size: 30px
+  font-weight: 700
+  letter-spacing: .02em
+
+  .no
+    color: $color-accent-1
+
+  .cn
+    font-family: $font-family-body
+    font-size: 14px
+    font-weight: 400
+    color: $color-meta
+
+  .rule
+    flex: 1
+    border-top: 2px solid $color-ink
+    transform: translateY(-6px)
+
+.doc-caption
+  margin-bottom: 14px
+  font-family: $font-family-mono
+  font-size: 11px
+  letter-spacing: .1em
+  color: $color-meta
+  text-transform: uppercase
+
+.overview p
+  max-width: 62ch
+
+// -----------------------------------------------------------
+// Fig 2-1: bit-field register diagram
+// -----------------------------------------------------------
+.ident
+  display: flex
+  flex-wrap: wrap
+  gap: 48px
+  align-items: flex-start
+
+.bitreg-wrap
+  flex: 1 1 380px
+  min-width: 340px
+
+.bitreg
+  position: relative
+  display: flex
+  padding-top: 18px
+
+  .bits
+    position: absolute
+    top: 0
+    font-family: $font-family-mono
+    font-size: 11px
+    color: $color-meta
+
+  .field
+    position: relative
+    padding: 28px 8px 18px
+    border: 2px solid $color-ink
+    text-align: center
+
+    + .field
+      border-left: none
+
+  .fname
+    display: block
+    font-family: $font-family-display
+    font-size: 21px
+    font-weight: 700
+    letter-spacing: .06em
+
+  .fval
+    display: block
+    margin-top: 4px
+    font-family: $font-family-mono
+    font-size: 13px
+    color: $color-accent-1
+
+  .f-part
+    flex: 2
+
+  .f-ver, .f-rev
+    flex: 1
+
+.specs
+  flex: 1 1 260px
+  min-width: 240px
+  border-top: 2px solid $color-ink
+
+  .row
+    display: flex
+    justify-content: space-between
+    padding: 7px 0
+    border-bottom: 1px solid $color-hairline
+    font-size: 14px
+
+  .k
+    font-family: $font-family-mono
+    font-size: 12px
+    letter-spacing: .08em
+    color: $color-meta
+    text-transform: uppercase
+
+  .v
+    font-weight: 700
+    text-align: right
+
+    &.red
+      color: $color-accent-1
+
+// -----------------------------------------------------------
+// Tables: register map / ordering / revision history
+// -----------------------------------------------------------
+table.doc
+  width: 100%
+  border-collapse: collapse
+
+  th
+    padding: 0 12px 8px 0
+    border-bottom: 2px solid $color-ink
+    font-family: $font-family-mono
+    font-size: 11px
+    font-weight: 500
+    letter-spacing: .14em
+    color: $color-meta
+    text-align: left
+    text-transform: uppercase
+
+  td
+    padding: 9px 12px 9px 0
+    border-bottom: 1px solid $color-hairline
+    vertical-align: baseline
+
+  th:last-child, td:last-child
+    padding-right: 0
+    text-align: right
+
+  .off
+    width: 90px
+    font-family: $font-family-mono
+    font-size: 13px
+    color: $color-accent-1
+    white-space: nowrap
+
+  .date
+    width: 110px
+    font-family: $font-family-mono
+    font-size: 12px
+    color: $color-meta
+    white-space: nowrap
+
+  .pn
+    width: 180px
+    font-family: $font-family-mono
+    font-size: 13px
+    font-weight: 500
+
+  .desc
+    color: $color-meta
+
+  .note
+    font-family: $font-family-mono
+    font-size: 11px
+    color: $color-meta
+
+  td a
+    color: $color-ink
+    text-decoration: none
+    background-image: linear-gradient($color-ink, $color-ink)
+    background-repeat: no-repeat
+    background-position: 0 100%
+    background-size: 100% 1px
+
+    &:hover
+      color: $color-accent-1
+      background-image: linear-gradient($color-accent-1, $color-accent-1)
+
+  tr:hover td
+    background: rgba(192, 57, 27, .05)
+
+  tr.year-row td
+    padding-top: 20px
+    border-bottom: 2px solid $color-ink
+    font-family: $font-family-display
+    font-size: 20px
+    font-weight: 700
+    text-align: left
+
+  tr.year-row:hover td
+    background: none
+
+  a.plain
+    color: $color-accent-1
+    background: none
+
+    &:hover
+      color: $color-paper
+      background: $color-accent-1
+
+// -----------------------------------------------------------
+// Compact header (non-home pages)
+// -----------------------------------------------------------
+#header
+  margin-bottom: 2.5rem
+  padding-bottom: 1rem
+  border-bottom: 2px solid $color-ink
+
+  .masthead
+    display: flex
+    align-items: baseline
+    gap: 16px
+
+    a.part
+      background: none
+      font-family: $font-family-display
+      font-size: 28px
+      font-weight: 700
+      color: $color-ink
+      text-decoration: none
+
+      .suffix
+        color: $color-accent-1
+
+    .doc
+      font-family: $font-family-mono
+      font-size: 11px
+      letter-spacing: .14em
+      color: $color-meta
+      text-transform: uppercase
+
+  #nav
+    margin-top: 6px
+    font-family: $font-family-mono
+    font-size: 12px
+    letter-spacing: .06em
+    text-transform: uppercase
+
+    ul
+      margin: 0
+      padding: 0
+      list-style: none
+
+      li
+        display: inline-block
+        margin-right: 18px
+        border: none
+
+      a
+        background: none
+        color: $color-meta
+        text-decoration: none
+
+        &:before
+          color: $color-accent-1
+          content: "§ "
+
+        &:hover
+          color: $color-accent-1
+
+      .icon
+        display: none
+
+// -----------------------------------------------------------
+// Article (post page = manual inner page)
+// -----------------------------------------------------------
+article
+  header
+    margin-bottom: 2rem
+    padding-bottom: 1.5rem
+    border-bottom: 1px solid $color-hairline
+
+    .reg-kicker
+      margin-bottom: 10px
+      font-family: $font-family-mono
+      font-size: 12px
+      letter-spacing: .1em
+      color: $color-accent-1
+      text-transform: uppercase
+
+    .posttitle
+      font-family: $font-family-display
+      font-size: 2rem
+      line-height: 1.25
+
+    .meta *
+      color: $color-meta
+
+  .content
+    counter-reset: sec2
+
+    h2
+      counter-increment: sec2
+
+      &:before
+        margin-right: .5rem
+        color: $color-accent-1
+        content: counter(sec2) "."
+
+    blockquote
+      border-left: 2px solid $color-accent-1
+      background: rgba(192, 57, 27, .04)
+      color: $color-quote
+
+    img, video
+      border: 1px solid $color-border
+
+table
+  border: 1px solid $color-border
+
+th
+  background: rgba(23, 20, 15, .04)
+
+td
+  border-bottom: 1px dotted $color-border
+
+code
+  border-color: $color-border
+  background: $color-background-code
+  color: $color-ink
+
+pre,
+.highlight
+  border: 1px solid $color-border
+  border-radius: 0
+  background: $color-background-code
+
+.highlight
+  position: relative
+  padding-top: 2.4rem
+
+  &:before
+    position: absolute
+    top: .55rem
+    left: .9rem
+    font-family: $font-family-mono
+    font-size: 11px
+    letter-spacing: .1em
+    color: $color-meta
+    content: "CODE EXAMPLE"
+    text-transform: uppercase
+
+  .btn-copy
+    color: $color-meta
+
+// -----------------------------------------------------------
+// Footer / pagination
+// -----------------------------------------------------------
+footer
+  margin-top: 3rem
+  border-top: none
+
+#footer
+  position: static
+
+  .runfoot
+    width: 100%
+    margin-top: 0
+    font-size: 11px
+
+#pagination
+  font-family: $font-family-mono
+  font-size: 12px
+
+  a
+    color: $color-accent-1
+
+// -----------------------------------------------------------
+// Content links (all pages)
+// -----------------------------------------------------------
+.content
+  a
+    color: $color-link
+    underline(5px, rgba(192, 57, 27, .5))
+
+    &:hover
+      color: $color-paper
+      background: $color-link
+      text-shadow: none
+
+  h1, .h1
+    color: $color-ink
+
+  h2, .h2
+    color: $color-ink
+
+  h3
+    color: $color-ink
+
+// -----------------------------------------------------------
+// Responsive / motion
+// -----------------------------------------------------------
+@media (max-width: 720px)
+  h1.part
+    font-size: 56px
+
+  .doc-kind
+    letter-spacing: .14em
+
+  .subtitle-en
+    letter-spacing: .08em
+
+  .bitreg-wrap
+    min-width: 0
+
+  .stamp
+    position: static
+    display: inline-block
+    margin-top: 18px
+    transform: rotate(3deg)
+
+  .doc-meta
+    flex-wrap: wrap
+    gap: 8px 24px
+
+  .runhead .mid
+    display: none
+
+@media (prefers-reduced-motion: reduce)
+  *
+    animation: none

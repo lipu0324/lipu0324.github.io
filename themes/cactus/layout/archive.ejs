@@ -1,20 +1,27 @@
 <div id="archive">
-  <ul class="post-list">
-    <% var year = 0 %>
-    <% var change = false %>
-    <% var field_sort = theme.archive.sort_updated ? 'updated' : 'date' %>
-    <% page.posts.sort(field_sort, 'desc').each(function(post) { %>
-      <% var itemYear = date(post[field_sort], 'YYYY') %>
-      <% change = year !== itemYear %>
-      <% year = change ? itemYear : year %>
-      <% if (change) { %>
-        <li class="post-year"><h2><%= year %></h2></li>
-      <% } %>
-      <li class="post-item">
-        <%- partial('_partial/post/date', { post: post, class_name: 'meta' }) %>
-        <span><%- partial('_partial/post/title', { post: post, index: true, class_name: '' }) %></span>
-      </li>
-    <% }); %>
-  </ul>
+  <p class="doc-caption">Table A-1 · Full register map, paged</p>
+  <table class="doc regmap">
+    <thead>
+      <tr><th>Offset</th><th>Description</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      <% var year = 0 %>
+      <% var per_page = config.per_page || 10 %>
+      <% var idx = ((page.current || 1) - 1) * per_page %>
+      <% page.posts.sort('date', 'desc').each(function(post) { %>
+        <% var itemYear = date(post.date, 'YYYY') %>
+        <% if (year !== itemYear) { %>
+          <% year = itemYear %>
+          <tr class="year-row"><td colspan="3"><%= year %></td></tr>
+        <% } %>
+        <tr>
+          <td class="off">0x<%= ('000' + (idx * 8).toString(16).toUpperCase()).slice(-3) %></td>
+          <td><a href="<%- url_for(post.path) %>"><%= post.title || 'Untitled' %></a></td>
+          <td class="date"><%= date(post.date, config.date_format) %></td>
+        </tr>
+        <% idx++ %>
+      <% }); %>
+    </tbody>
+  </table>
   <%- partial('_partial/pagination') %>
 </div>

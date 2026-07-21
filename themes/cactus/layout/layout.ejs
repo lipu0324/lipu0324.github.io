@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html<%= config.language ? " lang=" + config.language.substring(0, 2) : ""%>>
 <%- partial('_partial/head') %>
-<body class="max-width mx-auto px3 <%- theme.direction -%>">
+<body class="max-width mx-auto px3 <%- theme.direction -%><%= is_home() ? ' is-home' : '' %>">
     <% if (is_post()) { %>
       <%- partial('_partial/post/actions_desktop') %>
     <% } %>
     <div class="content index py4 <%= is_home() ? 'h-card' : '' %>">
-        <% if (!is_post()) { %>
+        <% if (!is_post() && !is_home()) { %>
           <%- partial('_partial/header') %>
         <% } %>
         <%- body %>

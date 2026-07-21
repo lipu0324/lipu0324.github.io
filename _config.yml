@@ -1,6 +1,6 @@
 title: lipu0324's Blog
 subtitle: 'notes from the shell'
-description: 'lipu0324@blog:~$ cat notes.md'
+description: '个人技术笔记库：芯片、网络与 GPU'
 keywords:
 author: lipu0324
 language: zh-CN
@@ -76,8 +76,8 @@ ignore:
 theme: cactus
 
 theme_config:
-  colorscheme: terminal
-  page_width: 58
+  colorscheme: trm
+  page_width: 64
   posts_overview:
     show_all_posts: true
     sort_updated: false

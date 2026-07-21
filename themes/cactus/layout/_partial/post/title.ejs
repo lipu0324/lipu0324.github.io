@@ -7,8 +7,10 @@
         <a class="<%= class_name %>" href="<%- url_for(post.path) %>">Untitled</a>
     <% } %>
 <% } else { %>
+    <% var reg_idx = 0 %>
+    <% site.posts.sort('date', 'desc').each(function(p, i) { if (p.path === post.path) { reg_idx = i } }) %>
+    <p class="reg-kicker">REG 0x<%= ('000' + (reg_idx * 8).toString(16).toUpperCase()).slice(-3) %> · RW · notes.md</p>
     <h1 class="<%= class_name %> p-name" itemprop="name headline">
         <%= post.title %>
     </h1>
 <% } %>
-

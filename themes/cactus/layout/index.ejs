@@ -1,137 +1,32 @@
-<div class="runhead">
-  <span>LIPU-0324</span>
-  <span class="mid">Technical Reference Manual</span>
-  <span class="pn" style="color:#c0391b">Rev 2.0</span>
+<div id="lipu-term" class="term">
+  <div class="term-titlebar">
+    <span class="term-dots"><i class="d-r"></i><i class="d-y"></i><i class="d-g"></i></span>
+    <span class="term-title">guest@lipu0324: ~</span>
+    <span class="term-links">
+      <a href="<%- url_for('/archives/') %>">archives</a>
+      <a href="<%- url_for('/about/') %>">about</a>
+      <a href="https://github.com/lipu0324">github</a>
+    </span>
+  </div>
+  <div class="term-screen" id="term-screen">
+    <div class="term-output" id="term-output"></div>
+    <div class="term-inputline" id="term-inputline"><span class="term-prompt" id="term-prompt"></span><span class="term-cmdwrap"><span id="term-before"></span><span class="term-cursor" id="term-cursor">&nbsp;</span><span id="term-after"></span></span></div>
+  </div>
+  <input id="term-input" class="term-hidden-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal input" />
 </div>
 
-<div class="titleblock">
-  <div class="stamp">已开源</div>
-  <p class="doc-kind">Technical Reference Manual · 技术参考手册</p>
-  <h1 class="part p-name">LIPU<span class="suffix">-0324</span></h1>
-  <p class="subtitle">个人技术笔记库：芯片、网络与 GPU</p>
-  <p class="subtitle-en">Personal notes on silicon, interconnects &amp; GPUs</p>
-  <div class="doc-meta">
-    <span>DOC NO. <b>LP-0324-TRM</b></span>
-    <span>REV <b>2.0</b></span>
-    <span>DATE <b><%= date(new Date(), 'YYYY-MM-DD') %></b></span>
-    <span>REGS <b><%= site.posts.length %></b></span>
-  </div>
-</div>
-
-<section class="manual overview">
-  <h2 class="sec"><span class="no">1.</span>DEVICE OVERVIEW<span class="cn">器件概述</span><span class="rule"></span></h2>
-  <p>本手册汇编 <b><%= config.author %></b> 自 2016 年以来的技术笔记，内容覆盖 <b>Chisel / FPGA</b> 硬件设计、<b>CUDA / GPU</b> 并行计算、<b>RDMA / InfiniBand</b> 数据中心网络与 <b>C++</b> 系统编程。全部条目按寄存器偏移编址，可通过表 3-1 直接寻址。</p>
-</section>
-
-<section class="manual">
-  <h2 class="sec"><span class="no">2.</span>DEVICE IDENTIFICATION<span class="cn">器件标识</span><span class="rule"></span></h2>
-  <div class="ident">
-    <div class="bitreg-wrap">
-      <p class="doc-caption">Fig 2-1 · DEVICE_ID register (RO, addr 0xFFFF)</p>
-      <div class="bitreg">
-        <span class="bits" style="left:0">31</span>
-        <span class="bits" style="left:calc(50% - 2px)">16</span>
-        <span class="bits" style="left:calc(50% + 24%)">8</span>
-        <span class="bits" style="right:0">0</span>
-        <div class="field f-part">
-          <span class="fname">PART_NUM</span>
-          <span class="fval">0x0324</span>
-        </div>
-        <div class="field f-ver">
-          <span class="fname">MAJOR</span>
-          <span class="fval">0x02</span>
-        </div>
-        <div class="field f-rev">
-          <span class="fname">MINOR</span>
-          <span class="fval">0x00</span>
-        </div>
-      </div>
-    </div>
-    <div class="specs">
-      <div class="row"><span class="k">Entries</span><span class="v red"><%= site.posts.length %></span></div>
-      <div class="row"><span class="k">First shipped</span><span class="v"><%= (theme.copyright && theme.copyright.start_year) || '2016' %></span></div>
-      <div class="row"><span class="k">Focus</span><span class="v">Silicon / GPU / RDMA</span></div>
-      <div class="row"><span class="k">Toolchain</span><span class="v">Obsidian → Hexo</span></div>
-      <div class="row"><span class="k">Host</span><span class="v">GitHub Pages</span></div>
-      <div class="row"><span class="k">RoHS</span><span class="v">Compliant</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="manual">
-  <h2 class="sec"><span class="no">3.</span>REGISTER MAP<span class="cn">寄存器映射 · 全部 <%= site.posts.length %> 条</span><span class="rule"></span></h2>
-  <p class="doc-caption">Table 3-1 · Post index, read-only, 8-byte stride</p>
-  <table class="doc regmap">
-    <thead>
-      <tr><th>Offset</th><th>Description</th><th>Date</th></tr>
-    </thead>
-    <tbody>
-      <% var reg_limit = 15 %>
-      <% var all_posts = site.posts.sort('date', 'desc') %>
-      <% var total = site.posts.length %>
-      <% all_posts.limit(reg_limit).each(function(post, i) { %>
-        <tr>
-          <td class="off">0x<%= ('000' + (i * 8).toString(16).toUpperCase()).slice(-3) %></td>
-          <td><a href="<%- url_for(post.path) %>"><%= post.title || 'Untitled' %></a></td>
-          <td class="date"><%= date(post.date, config.date_format) %></td>
-        </tr>
+<noscript>
+  <div class="term-noscript">
+    <p>终端需要启用 JavaScript。你也可以直接浏览全部文章：</p>
+    <ul>
+      <% site.posts.sort('date', 'desc').each(function(post) { %>
+        <li><a href="<%- url_for(post.path) %>"><%= post.title || 'Untitled' %></a> · <%= date(post.date, config.date_format) %></li>
       <% }); %>
-      <% if (total > reg_limit) { %>
-        <tr>
-          <td class="off">…</td>
-          <td><a class="plain" href="<%- url_for(theme.nav.articles) %>"><%= total - reg_limit %> more entries in the full map →</a></td>
-          <td class="date"></td>
-        </tr>
-      <% } %>
-    </tbody>
-  </table>
-</section>
+    </ul>
+  </div>
+</noscript>
 
-<section class="manual">
-  <h2 class="sec"><span class="no">4.</span>ORDERING INFORMATION<span class="cn">订购信息</span><span class="rule"></span></h2>
-  <p class="doc-caption">Table 4-1 · Available packages</p>
-  <table class="doc ordering">
-    <% var pn_map = { about: 'LP-0324-ABT', articles: 'LP-0324-ARC', github: 'LP-0324-GH' } %>
-    <% var desc_map = { about: 'Vendor information', articles: 'Full register archive, paged', github: 'Source & issue tracker' } %>
-    <% for (var i in theme.nav) { %>
-      <% if (theme.nav[i] === '/') { continue } %>
-      <tr>
-        <td class="pn"><%= pn_map[i] || ('LP-0324-' + i.toUpperCase()) %></td>
-        <td><a class="plain" href="<%- url_for(theme.nav[i]) %>"><%= theme.nav[i].replace(/^https?:\/\//, '') %></a></td>
-        <td class="desc"><%= desc_map[i] || '' %></td>
-      </tr>
-    <% } %>
-  </table>
-</section>
-
-<section class="manual">
-  <h2 class="sec"><span class="no">5.</span>REVISION HISTORY<span class="cn">修订历史</span><span class="rule"></span></h2>
-  <p class="doc-caption">Table 5-1 · Document revisions</p>
-  <table class="doc revhist" style="max-width:640px">
-    <thead>
-      <tr><th>Rev</th><th>Date</th><th>Description</th></tr>
-    </thead>
-    <tr><td class="off">1.0</td><td class="date">2016</td><td>Initial release</td></tr>
-    <tr><td class="off">1.1</td><td class="date">2025-06</td><td>Terminal / CRT skin applied</td></tr>
-    <tr><td class="off">2.0</td><td class="date">2026-07</td><td>Recharacterized as Technical Reference Manual</td></tr>
-  </table>
-</section>
-
-<div class="runfoot">
-  <span>© 2016–<%= new Date().getFullYear() %> <%= config.author %></span>
-  <span class="mid">LIPU-0324 TRM · Rev 2.0</span>
-  <span class="pn">Page 1 / 1</span>
-</div>
-
-<% if (site.data.projects) { %>
-<section id="projects">
-  <span class="h1"><a href="<%- url_for(theme.projects_url) %>"><%= __('index.projects') %></a></span>
-  <ul class="project-list">
-    <% for(var obj in site.data.projects){ %>
-      <li class="project-item">
-        <a href="<%= site.data.projects[obj].url %>"><%= site.data.projects[obj].name %></a>: <%- markdown(site.data.projects[obj].desc) %>
-      </li>
-    <% } %>
-  </ul>
-</section>
-<% } %>
+<script>
+  window.__LIPU_TERM__ = { fs: '<%- url_for('/fs.json') %>' };
+</script>
+<%- js('js/terminal') %>

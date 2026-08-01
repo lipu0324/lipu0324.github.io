@@ -1,0 +1,193 @@
+// -----------------------------------------------------------
+// lipuOS terminal (homepage)
+// -----------------------------------------------------------
+
+$term-bg = #0d1117
+$term-panel = #161b22
+$term-border = #21262d
+$term-fg = #c9d1d9
+$term-dim = #8b949e
+$term-green = #3fb950
+$term-blue = #58a6ff
+$term-red = #f85149
+$term-hl = #ff7b72
+
+.term
+  margin: 2rem auto 3rem
+  overflow: hidden
+  background: $term-bg
+  border: 1px solid $term-border
+  border-radius: 8px
+  box-shadow: 0 16px 48px rgba(23, 20, 15, .28)
+  font-family: $font-family-mono
+
+.term-titlebar
+  display: flex
+  align-items: center
+  padding: 10px 14px
+  background: $term-panel
+  border-bottom: 1px solid $term-border
+
+  .term-dots
+    flex: 0 0 auto
+
+    i
+      display: inline-block
+      width: 12px
+      height: 12px
+      margin-right: 8px
+      border-radius: 50%
+
+    .d-r
+      background: #ff5f56
+    .d-y
+      background: #ffbd2e
+    .d-g
+      background: #27c93f
+
+  .term-title
+    flex: 1
+    color: $term-dim
+    text-align: center
+    font-size: 12px
+
+  .term-links
+    flex: 0 0 auto
+
+    a
+      margin-left: 14px
+      color: $term-dim
+      text-decoration: none
+      font-size: 12px
+
+      &:hover
+        color: $term-blue
+
+.term-screen
+  position: relative
+  padding: 18px 20px 26px
+  min-height: 420px
+  color: $term-fg
+  font-size: 13.5px
+  line-height: 1.6
+
+  &:before
+    content: ""
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .014) 0 1px, transparent 1px 3px)
+    pointer-events: none
+
+  ::selection
+    background: rgba(88, 166, 255, .32)
+    color: #fff
+
+  a
+    color: inherit
+
+.t-line
+  white-space: pre-wrap
+  word-break: break-word
+
+  a
+    text-decoration: none
+    border-bottom: 1px dotted $term-dim
+
+    &:hover
+      color: $term-blue
+      border-bottom-color: $term-blue
+
+.t-echo
+  .p-user
+    color: $term-green
+  .p-path
+    color: $term-blue
+  .p-sep
+    color: $term-dim
+
+.term-inputline
+  white-space: pre-wrap
+  word-break: break-word
+
+.term-prompt
+  .p-user
+    color: $term-green
+  .p-path
+    color: $term-blue
+  .p-sep
+    color: $term-dim
+
+.term-cursor
+  background: $term-fg
+  color: $term-bg
+
+  &.idle
+    animation: term-blink 1.06s step-end infinite
+
+@keyframes term-blink
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0
+
+.t-err
+  color: $term-red
+
+.t-dim
+  color: $term-dim
+
+.t-dir
+  color: $term-blue
+  font-weight: 600
+
+.t-path
+  color: $term-green
+
+.t-ln
+  color: $term-dim
+
+.t-hl
+  color: $term-hl
+  font-weight: 700
+
+.t-neo-art
+  color: $term-red
+
+.t-neo-k
+  color: $term-blue
+  font-weight: 600
+
+.term-hidden-input
+  position: fixed
+  bottom: 0
+  left: 0
+  width: 2px
+  height: 2px
+  padding: 0
+  opacity: 0
+  border: none
+  outline: none
+
+.term-noscript
+  padding: 18px 20px
+  color: $term-fg
+  font-size: 13.5px
+
+  a
+    color: $term-blue
+
+@media (max-width: 640px)
+  .term
+    margin: 1rem auto 2rem
+    border-radius: 6px
+
+  .term-screen
+    padding: 12px 12px 18px
+    min-height: 320px
+    font-size: 12px
+
+  .term-title
+    display: none

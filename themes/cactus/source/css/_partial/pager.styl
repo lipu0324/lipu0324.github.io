@@ -1,0 +1,207 @@
+// -----------------------------------------------------------
+// less pager (post pages, fullscreen dark)
+// -----------------------------------------------------------
+
+body.is-post
+  max-width: none
+  padding: 0
+  background: $term-bg
+  background-image: none
+
+  > .content
+    padding: 0
+
+  #footer
+  #header-post
+  #footer-post
+    display: none
+
+.pager
+  max-width: 880px
+  margin: 0 auto
+  padding: 22px 26px 96px
+  color: $term-fg
+  font-family: $font-family-mono
+  font-size: 14px
+  line-height: 1.8
+
+  ::selection
+    background: rgba(88, 166, 255, .32)
+    color: #fff
+
+.pager-echo
+  margin-bottom: 2rem
+  white-space: pre-wrap
+  word-break: break-word
+
+// suppress the TRM section counter on pager pages
+body.is-post .pager .post h2:before
+  content: none
+
+// ---------- article typography on dark ----------
+.pager .post
+  .reg-kicker
+    display: none
+
+  .posttitle
+    margin: 0 0 .5rem
+    color: #f0f6fc
+    font-family: $font-family-mono
+    font-size: 1.6rem
+    line-height: 1.4
+
+  .meta
+    margin-bottom: 2rem
+    color: $term-dim
+    font-size: 13px
+
+    a
+      color: $term-cyan
+
+  h1, h2, h3, h4, h5, h6
+    color: $term-cyan
+    font-family: $font-family-mono
+
+  h2
+    margin-top: 2.4rem
+    padding-bottom: .3rem
+    border-bottom: 1px dashed #30363d
+
+  h3
+    text-decoration: none
+    color: $term-blue
+
+  h4, h5, h6
+    color: $term-dim
+
+  p, li
+    color: $term-fg
+
+  a
+    background: none
+    color: $term-cyan
+    text-shadow: none
+    border-bottom: 1px dotted $term-dim
+
+    &:hover
+      background: none
+      color: $term-blue
+      text-shadow: none
+      border-bottom-color: $term-blue
+
+  strong
+    color: #f0f6fc
+
+  em
+    color: inherit
+
+  hr
+    border-color: #30363d
+    opacity: 1
+
+  blockquote
+    margin: 1rem 0
+    padding: .2rem 1rem
+    border-left: 3px solid #30363d
+    color: $term-dim
+
+  code
+    border: 1px solid #30363d
+    background: #161b22
+    color: #f0f6fc
+
+  pre
+    border: 1px solid #21262d
+    background: #161b22
+
+  .highlight
+    border: 1px solid #21262d
+    background: #161b22
+    color: #c9d1d9
+
+    .gutter
+    .line
+      color: inherit
+
+  table
+    color: $term-fg
+
+    th
+      border-bottom: 1px solid #30363d
+      color: #f0f6fc
+
+    td
+      border-bottom: 1px solid #21262d
+
+  img
+    border: 1px solid #21262d
+    border-radius: 4px
+
+// search hits
+mark.pager-mark
+  padding: 0 1px
+  background: #d29922
+  color: #0d1117
+  border-radius: 2px
+
+  &.current
+    background: $term-red
+    color: #fff
+
+// ---------- bottom status bar (reverse video) ----------
+.pager-status
+  position: fixed
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+  display: flex
+  justify-content: space-between
+  padding: 5px 14px
+  background: $term-fg
+  color: $term-bg
+  font-family: $font-family-mono
+  font-size: 13px
+  line-height: 1.4
+
+  .pager-left
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+
+  .pager-hint
+    flex: 0 0 auto
+    margin-left: 14px
+    opacity: .65
+
+  .pager-search
+    display: none
+    flex: 1
+
+    input
+      width: 100%
+      padding: 0
+      border: none
+      outline: none
+      background: transparent
+      color: inherit
+      font: inherit
+
+  &.searching
+    .pager-left
+    .pager-hint
+      display: none
+
+    .pager-search
+      display: block
+
+@media (max-width: 640px)
+  .pager
+    padding: 14px 14px 80px
+    font-size: 13px
+
+    .posttitle
+      font-size: 1.3rem
+
+  .pager-status .pager-hint
+    display: none

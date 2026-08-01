@@ -129,7 +129,7 @@
       '## 小贴士',
       '  · Tab 补全命令和路径，↑/↓ 翻阅历史，Ctrl+L 清屏',
       '  · grep -i <关键词> posts/   全文搜索',
-      '  · vim posts/<文章.md>       跳转到文章页阅读',
+      '  · less posts/<文章.md>      分页器跳转到文章页阅读',
       '  · 文章列表也可以直接点击（ls 输出的文件名是链接）'
     ].join('\n');
   }
@@ -270,7 +270,7 @@
       '',
       '  阅读',
       '    cat <文件>             查看文件内容',
-      '    less / more <文件>     同 cat',
+      '    less / more <文件>     分页器阅读（跳转到文章页）',
       '    head / tail [-n N] <文件>  查看开头 / 结尾 N 行',
       '    vim <文件>             跳转到文章页阅读（推荐）',
       '',
@@ -647,8 +647,8 @@
     pwd:      { fn: cmdPwd,       usage: 'pwd',                               desc: '显示当前目录' },
     tree:     { fn: cmdTree,      usage: 'tree [path]',                       desc: '树状显示目录' },
     cat:      { fn: cmdCat,       usage: 'cat <file...>',                     desc: '查看文件内容' },
-    less:     { fn: cmdCat,       usage: 'less <file>',                       desc: '同 cat' },
-    more:     { fn: cmdCat,       usage: 'more <file>',                       desc: '同 cat' },
+    less:     { fn: function (a) { cmdOpen(a, 'less'); },  usage: 'less <file>', desc: '分页器阅读（跳转到文章页）' },
+    more:     { fn: function (a) { cmdOpen(a, 'more'); },  usage: 'more <file>', desc: '同 less' },
     head:     { fn: function (a) { cmdHeadTail(a, true, 'head'); },  usage: 'head [-n N] <file>', desc: '查看文件开头' },
     tail:     { fn: function (a) { cmdHeadTail(a, false, 'tail'); }, usage: 'tail [-n N] <file>', desc: '查看文件结尾' },
     wc:       { fn: cmdWc,        usage: 'wc [-l] <file>',                    desc: '统计行数 / 词数 / 字符数' },
@@ -864,7 +864,7 @@
     print('输入 help 查看全部指令。快速上手：');
     printHTML('  <span class="t-dim">$</span> ls posts/              <span class="t-dim"># 列出全部文章</span>');
     printHTML('  <span class="t-dim">$</span> grep -i cuda posts/    <span class="t-dim"># 全文搜索</span>');
-    printHTML('  <span class="t-dim">$</span> vim posts/&lt;Tab&gt;      <span class="t-dim"># 打开文章页阅读</span>');
+    printHTML('  <span class="t-dim">$</span> less posts/&lt;Tab&gt;     <span class="t-dim"># 分页器打开文章（q 返回）</span>');
     print('');
   }
 

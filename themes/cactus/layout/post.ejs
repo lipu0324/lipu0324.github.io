@@ -1,18 +1,32 @@
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    <%- partial('_partial/post/title', { post: page, index: false, class_name: 'posttitle' }) %>
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name"><% if (page.author) { %><%- page.author %><% } else { %><%- config.author %><% } %></span>
-      </span>
-      <%- partial('_partial/post/date', { post: page, class_name: 'postdate' }) %>
-      <%- partial('_partial/post/category') %>
-      <%- partial('_partial/post/tag') %>
+<div class="pager">
+  <div class="pager-echo t-line"><span class="p-arrow">➜</span>  <span class="p-path">~</span> <span class="p-git">git:(</span><span class="p-branch">main</span><span class="p-git">)</span> less posts/<%= page.slug %>.md</div>
+  <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <%- partial('_partial/post/title', { post: page, index: false, class_name: 'posttitle' }) %>
+      <div class="meta">
+        <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <span class="p-name" itemprop="name"><% if (page.author) { %><%- page.author %><% } else { %><%- config.author %><% } %></span>
+        </span>
+        <%- partial('_partial/post/date', { post: page, class_name: 'postdate' }) %>
+        <%- partial('_partial/post/category') %>
+        <%- partial('_partial/post/tag') %>
+      </div>
+    </header>
+    <%- partial('_partial/post/gallery') %>
+    <div class="content e-content" itemprop="articleBody">
+      <%- page.content %>
     </div>
-  </header>
-  <%- partial('_partial/post/gallery') %>
-  <div class="content e-content" itemprop="articleBody">
-    <%- page.content %>
-  </div>
-</article>
+  </article>
+</div>
 <%- partial('_partial/comments') %>
+
+<div class="pager-status" id="pager-status">
+  <span class="pager-left"><span id="pager-file">posts/<%= page.slug %>.md</span><span id="pager-pos"></span></span>
+  <span class="pager-hint">q 退出 · / 搜索 · n/N 上/下一个 · g/G 首/尾 · j/k 滚动</span>
+  <span class="pager-search" id="pager-search-wrap">/<input id="pager-search" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="search" /></span>
+</div>
+
+<script>
+  window.__LIPU_PAGER__ = { home: '<%- url_for('/') %>' };
+</script>
+<%- js('js/pager') %>

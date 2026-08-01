@@ -29,4 +29,4 @@
 <script>
   window.__LIPU_PAGER__ = { home: '<%- url_for('/') %>' };
 </script>
-<%- js('js/pager') %>
+<script src="<%- url_for('/js/pager.js') %>?v=<%= Date.now() %>"></script>

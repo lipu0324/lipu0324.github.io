@@ -20,4 +20,4 @@
 <script>
   window.__LIPU_TERM__ = { fs: '<%- url_for('/fs.json') %>' };
 </script>
-<%- js('js/terminal') %>
+<script src="<%- url_for('/js/terminal.js') %>?v=<%= Date.now() %>"></script>

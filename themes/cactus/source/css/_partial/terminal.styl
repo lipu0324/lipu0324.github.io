@@ -1,75 +1,41 @@
 // -----------------------------------------------------------
-// lipuOS terminal (homepage)
+// lipuOS terminal (homepage, fullscreen, oh-my-zsh robbyrussell)
 // -----------------------------------------------------------
 
 $term-bg = #0d1117
-$term-panel = #161b22
-$term-border = #21262d
 $term-fg = #c9d1d9
 $term-dim = #8b949e
-$term-green = #3fb950
+$term-green = #2ecf5f
+$term-cyan = #39c5cf
 $term-blue = #58a6ff
 $term-red = #f85149
 $term-hl = #ff7b72
 
-.term
-  margin: 2rem auto 3rem
-  overflow: hidden
+// full-bleed terminal: no paper background, no page footer on home
+body.is-home
+  max-width: none
+  padding: 0
   background: $term-bg
-  border: 1px solid $term-border
-  border-radius: 8px
-  box-shadow: 0 16px 48px rgba(23, 20, 15, .28)
+  background-image: none
+
+  .content
+    padding: 0
+
+  #footer
+    display: none
+
+.term
+  min-height: 100vh
+  background: $term-bg
+  color: $term-fg
   font-family: $font-family-mono
-
-.term-titlebar
-  display: flex
-  align-items: center
-  padding: 10px 14px
-  background: $term-panel
-  border-bottom: 1px solid $term-border
-
-  .term-dots
-    flex: 0 0 auto
-
-    i
-      display: inline-block
-      width: 12px
-      height: 12px
-      margin-right: 8px
-      border-radius: 50%
-
-    .d-r
-      background: #ff5f56
-    .d-y
-      background: #ffbd2e
-    .d-g
-      background: #27c93f
-
-  .term-title
-    flex: 1
-    color: $term-dim
-    text-align: center
-    font-size: 12px
-
-  .term-links
-    flex: 0 0 auto
-
-    a
-      margin-left: 14px
-      color: $term-dim
-      text-decoration: none
-      font-size: 12px
-
-      &:hover
-        color: $term-blue
 
 .term-screen
   position: relative
-  padding: 18px 20px 26px
-  min-height: 420px
-  color: $term-fg
-  font-size: 13.5px
-  line-height: 1.6
+  padding: 22px 26px 48px
+  min-height: 100vh
+  font-size: 14px
+  line-height: 1.65
 
   &:before
     content: ""
@@ -85,40 +51,49 @@ $term-hl = #ff7b72
     background: rgba(88, 166, 255, .32)
     color: #fff
 
+  // neutralize the site's red paper link style inside the terminal
   a
+    background: none
     color: inherit
+    text-shadow: none
+
+    &:hover
+      background: none
+      color: $term-blue
+      text-shadow: none
 
 .t-line
   white-space: pre-wrap
   word-break: break-word
 
   a
-    text-decoration: none
     border-bottom: 1px dotted $term-dim
 
     &:hover
-      color: $term-blue
       border-bottom-color: $term-blue
 
-.t-echo
-  .p-user
-    color: $term-green
-  .p-path
-    color: $term-blue
-  .p-sep
-    color: $term-dim
-
+// oh-my-zsh (robbyrussell) prompt: ➜  ~/posts git:(main)
 .term-inputline
+.term-prompt
   white-space: pre-wrap
   word-break: break-word
 
-.term-prompt
-  .p-user
-    color: $term-green
-  .p-path
-    color: $term-blue
-  .p-sep
-    color: $term-dim
+.p-arrow
+  color: $term-green
+  font-weight: 700
+
+  &.fail
+    color: $term-red
+
+.p-path
+  color: $term-cyan
+  font-weight: 700
+
+.p-git
+  color: $term-dim
+
+.p-branch
+  color: $term-red
 
 .term-cursor
   background: $term-fg
@@ -157,7 +132,7 @@ $term-hl = #ff7b72
   color: $term-red
 
 .t-neo-k
-  color: $term-blue
+  color: $term-cyan
   font-weight: 600
 
 .term-hidden-input
@@ -172,22 +147,14 @@ $term-hl = #ff7b72
   outline: none
 
 .term-noscript
-  padding: 18px 20px
+  padding: 22px 26px
   color: $term-fg
-  font-size: 13.5px
+  font-size: 14px
 
   a
     color: $term-blue
 
 @media (max-width: 640px)
-  .term
-    margin: 1rem auto 2rem
-    border-radius: 6px
-
   .term-screen
-    padding: 12px 12px 18px
-    min-height: 320px
-    font-size: 12px
-
-  .term-title
-    display: none
+    padding: 14px 14px 32px
+    font-size: 12.5px

@@ -32,6 +32,7 @@
   var history = [];
   var histPos = 0;
   var lastTab = 0;
+  var lastFailed = false;
 
   /* ---------------- helpers ---------------- */
   function esc(s) {
@@ -50,6 +51,7 @@
     d.className = 't-line' + (cls ? ' ' + cls : '');
     d.textContent = text;
     outEl.appendChild(d);
+    if (cls && cls.indexOf('t-err') >= 0) lastFailed = true;
   }
   function printHTML(html, cls) {
     var d = document.createElement('div');
@@ -202,10 +204,9 @@
 
   /* ---------------- prompt & input rendering ---------------- */
   function promptHTML() {
-    return '<span class="p-user">guest@' + esc(HOST) + '</span>' +
-           '<span class="p-sep">:</span>' +
-           '<span class="p-path">' + esc(displayPath(cwd)) + '</span>' +
-           '<span class="p-sep">$</span> ';
+    return '<span class="p-arrow' + (lastFailed ? ' fail' : '') + '">➜</span>  ' +
+           '<span class="p-path">' + esc(displayPath(cwd)) + '</span> ' +
+           '<span class="p-git">git:(</span><span class="p-branch">main</span><span class="p-git">)</span> ';
   }
   function renderPrompt() {
     promptEl.innerHTML = promptHTML();
@@ -697,6 +698,7 @@
   function run(cmd) {
     var argv = tokenize(cmd);
     if (!argv.length) return;
+    lastFailed = false;
     var name = argv[0];
     if (ALIASES[name]) {
       argv = ALIASES[name].concat(argv.slice(1));
@@ -723,6 +725,7 @@
       pushHistory(cmd);
       run(cmd);
     }
+    renderPrompt();
     scrollDown();
   }
 
@@ -857,6 +860,7 @@
     print('');
     printHTML('欢迎来到 <b>' + esc(data.site.title) + '</b>' +
       (data.site.subtitle ? ' — ' + esc(data.site.subtitle) : ''));
+    printHTML('<span class="t-dim">传统入口：<a href="/archives/">/archives/</a> · <a href="/about/">/about/</a> · <a href="https://github.com/lipu0324">github</a></span>');
     print('输入 help 查看全部指令。快速上手：');
     printHTML('  <span class="t-dim">$</span> ls posts/              <span class="t-dim"># 列出全部文章</span>');
     printHTML('  <span class="t-dim">$</span> grep -i cuda posts/    <span class="t-dim"># 全文搜索</span>');

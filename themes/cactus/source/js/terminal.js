@@ -194,12 +194,56 @@
     return parts.slice(cwd.length).join('/');
   }
   function collectFiles(node, parts, arr) {
-    Object.keys(node.c).sort().forEach(function (name) {
+    sortDirectoryNames(node, Object.keys(node.c), parts).forEach(function (name) {
       var child = node.c[name];
       var p = parts.concat(name);
       if (child.t === 'd') collectFiles(child, p, arr);
       else arr.push({ parts: p, node: child });
     });
+  }
+
+  function postTimestamp(node) {
+    return node && node.t === 'f' && node.p ? (node.p.timestamp || 0) : 0;
+  }
+
+  function comparePostNames(children) {
+    return function (a, b) {
+      var aTimestamp = postTimestamp(children[a]);
+      var bTimestamp = postTimestamp(children[b]);
+      if (aTimestamp !== bTimestamp) return bTimestamp - aTimestamp;
+      return a.localeCompare(b);
+    };
+  }
+
+  function hasOnlyPosts(node, names) {
+    return names.length > 0 && names.every(function (name) {
+      return node.c[name] && node.c[name].t === 'f' && node.c[name].p;
+    });
+  }
+
+  function latestPostTimestamp(node) {
+    if (!node) return 0;
+    if (node.t === 'f') return postTimestamp(node);
+    return Object.keys(node.c || {}).reduce(function (latest, name) {
+      return Math.max(latest, latestPostTimestamp(node.c[name]));
+    }, 0);
+  }
+
+  function sortDirectoryNames(node, names, parts) {
+    if (hasOnlyPosts(node, names)) {
+      return names.sort(comparePostNames(node.c));
+    }
+    // Archive year directories are themselves an article listing; put the
+    // years with the newest article first, while keeping other directories
+    // (categories, tags, home) alphabetic.
+    if (parts && parts.length === 3 && parts[0] === 'home' &&
+        parts[1] === 'guest' && parts[2] === 'archives') {
+      return names.sort(function (a, b) {
+        var delta = latestPostTimestamp(node.c[b]) - latestPostTimestamp(node.c[a]);
+        return delta || a.localeCompare(b);
+      });
+    }
+    return names.sort();
   }
 
   /* ---------------- prompt & input rendering ---------------- */
@@ -303,11 +347,7 @@
       if (targets.length > 1) print(t + ':');
       var names = Object.keys(node.c)
         .filter(function (n) { return all || n.charAt(0) !== '.'; });
-      if (isPostsDirectory(parts)) {
-        names.sort(comparePostNames(node.c));
-      } else {
-        names.sort();
-      }
+      names = sortDirectoryNames(node, names, parts);
       if (long) {
         names.forEach(function (n) {
           var child = node.c[n];
@@ -321,20 +361,6 @@
       }
       if (targets.length > 1 && ti < targets.length - 1) print('');
     });
-  }
-
-  function isPostsDirectory(parts) {
-    return parts.length === 3 &&
-      parts[0] === 'home' && parts[1] === 'guest' && parts[2] === 'posts';
-  }
-
-  function comparePostNames(children) {
-    return function (a, b) {
-      var aTimestamp = children[a] && children[a].p ? children[a].p.timestamp || 0 : 0;
-      var bTimestamp = children[b] && children[b].p ? children[b].p.timestamp || 0 : 0;
-      if (aTimestamp !== bTimestamp) return bTimestamp - aTimestamp;
-      return a.localeCompare(b);
-    };
   }
 
   function lsName(name, node) {
@@ -515,7 +541,7 @@
         results.push(path === '.' && disp !== '.' ? './' + disp : disp);
       }
       if (n.t === 'd') {
-        Object.keys(n.c).sort().forEach(function (childName) {
+        sortDirectoryNames(n, Object.keys(n.c), p).forEach(function (childName) {
           walk(n.c[childName], p.concat(childName));
         });
       }
@@ -531,16 +557,19 @@
     if (node.t !== 'd') { print(path); return; }
     var counts = { d: 0, f: 0 };
     var lines = [path === '.' ? '.' : displayPath(parts)];
-    (function rec(n, prefix) {
-      var names = Object.keys(n.c).sort();
+    (function rec(n, prefix, currentParts) {
+      var names = sortDirectoryNames(n, Object.keys(n.c), currentParts);
       names.forEach(function (name, idx) {
         var last = idx === names.length - 1;
         var child = n.c[name];
         lines.push(prefix + (last ? '└── ' : '├── ') + name + (child.t === 'd' ? '/' : ''));
-        if (child.t === 'd') { counts.d++; rec(child, prefix + (last ? '    ' : '│   ')); }
+        if (child.t === 'd') {
+          counts.d++;
+          rec(child, prefix + (last ? '    ' : '│   '), currentParts.concat(name));
+        }
         else counts.f++;
       });
-    })(node, '');
+    })(node, '', parts);
     lines.push('');
     lines.push(counts.d + ' directories, ' + counts.f + ' files');
     print(lines.join('\n'));

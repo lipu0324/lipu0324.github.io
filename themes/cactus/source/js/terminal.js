@@ -302,8 +302,12 @@
       if (node.t !== 'd') { printHTML(lsName(parts[parts.length - 1], node)); return; }
       if (targets.length > 1) print(t + ':');
       var names = Object.keys(node.c)
-        .filter(function (n) { return all || n.charAt(0) !== '.'; })
-        .sort();
+        .filter(function (n) { return all || n.charAt(0) !== '.'; });
+      if (isPostsDirectory(parts)) {
+        names.sort(comparePostNames(node.c));
+      } else {
+        names.sort();
+      }
       if (long) {
         names.forEach(function (n) {
           var child = node.c[n];
@@ -318,6 +322,21 @@
       if (targets.length > 1 && ti < targets.length - 1) print('');
     });
   }
+
+  function isPostsDirectory(parts) {
+    return parts.length === 3 &&
+      parts[0] === 'home' && parts[1] === 'guest' && parts[2] === 'posts';
+  }
+
+  function comparePostNames(children) {
+    return function (a, b) {
+      var aTimestamp = children[a] && children[a].p ? children[a].p.timestamp || 0 : 0;
+      var bTimestamp = children[b] && children[b].p ? children[b].p.timestamp || 0 : 0;
+      if (aTimestamp !== bTimestamp) return bTimestamp - aTimestamp;
+      return a.localeCompare(b);
+    };
+  }
+
   function lsName(name, node) {
     if (node.t === 'd') return '<span class="t-dir">' + esc(name) + '/</span>';
     var url = fileUrl(node);

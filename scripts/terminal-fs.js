@@ -78,6 +78,7 @@ hexo.extend.generator.register('terminal_fs', function (locals) {
       title: post.title || post.slug || 'Untitled',
       url: root + post.path,
       date: post.date ? post.date.format('YYYY-MM-DD') : '',
+      timestamp: post.date ? post.date.valueOf() : 0,
       categories: relNames(post.categories),
       tags: relNames(post.tags),
       words: content.split(/\s+/).filter(Boolean).length,

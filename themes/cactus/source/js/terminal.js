@@ -11,6 +11,8 @@
   var HOME = ['home', 'guest'];
   var BOOT_EPOCH = new Date('2016-01-01T00:00:00').getTime();
   var HIST_KEY = 'lipu.term.history';
+  var STATE_KEY = 'lipu.term.session.v1';
+  var STATE_VERSION = 1;
 
   /* ---------------- DOM ---------------- */
   var term = document.getElementById('lipu-term');
@@ -33,6 +35,7 @@
   var histPos = 0;
   var lastTab = 0;
   var lastFailed = false;
+  var sessionReady = false;
 
   /* ---------------- helpers ---------------- */
   function esc(s) {
@@ -291,6 +294,77 @@
     inputEl.value = history[histPos] || '';
     inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length;
     renderInput();
+    saveSession();
+  }
+
+  /* ---------------- session state ---------------- */
+  function isPathArray(value) {
+    return Array.isArray(value) && value.every(function (part) {
+      return typeof part === 'string';
+    });
+  }
+
+  function loadSession() {
+    try {
+      var raw = sessionStorage.getItem(STATE_KEY);
+      if (!raw) return null;
+      var state = JSON.parse(raw);
+      var valid = state && state.version === STATE_VERSION &&
+        typeof state.output === 'string' && isPathArray(state.cwd) &&
+        (state.oldpwd === null || isPathArray(state.oldpwd)) &&
+        typeof state.input === 'string' &&
+        typeof state.selectionStart === 'number' &&
+        typeof state.selectionEnd === 'number' &&
+        typeof state.histPos === 'number' &&
+        typeof state.lastFailed === 'boolean' &&
+        typeof state.scrollY === 'number';
+      if (!valid) throw new Error('invalid terminal session');
+      return state;
+    } catch (e) {
+      try { sessionStorage.removeItem(STATE_KEY); } catch (_err) { /* ignore */ }
+      return null;
+    }
+  }
+
+  function saveSession() {
+    if (!sessionReady) return;
+    try {
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({
+        version: STATE_VERSION,
+        output: outEl.innerHTML,
+        cwd: cwd.slice(),
+        oldpwd: oldpwd ? oldpwd.slice() : null,
+        input: inputEl.value,
+        selectionStart: inputEl.selectionStart == null ? inputEl.value.length : inputEl.selectionStart,
+        selectionEnd: inputEl.selectionEnd == null ? inputEl.value.length : inputEl.selectionEnd,
+        histPos: histPos,
+        lastFailed: lastFailed,
+        scrollY: window.scrollY || 0
+      }));
+    } catch (e) { /* storage disabled or quota exceeded */ }
+  }
+
+  function restoreSession(state) {
+    if (!state) return false;
+    var restoredCwd = nodeAt(state.cwd);
+    if (!restoredCwd || restoredCwd.t !== 'd') return false;
+
+    cwd = state.cwd.slice();
+    var restoredOldpwd = state.oldpwd && nodeAt(state.oldpwd);
+    oldpwd = restoredOldpwd && restoredOldpwd.t === 'd' ? state.oldpwd.slice() : null;
+    histPos = Math.max(0, Math.min(history.length, state.histPos));
+    lastFailed = state.lastFailed;
+    outEl.innerHTML = state.output;
+    inputEl.value = state.input;
+
+    var start = Math.max(0, Math.min(state.input.length, state.selectionStart));
+    var end = Math.max(start, Math.min(state.input.length, state.selectionEnd));
+    inputEl.selectionStart = start;
+    inputEl.selectionEnd = end;
+    renderPrompt();
+    renderInput();
+    setTimeout(function () { window.scrollTo(0, Math.max(0, state.scrollY)); }, 0);
+    return true;
   }
 
   /* ---------------- commands ---------------- */
@@ -365,9 +439,10 @@
 
   function lsName(name, node) {
     if (node.t === 'd') return '<span class="t-dir">' + esc(name) + '/</span>';
+    var label = node.t === 'f' && node.p && node.p.title ? node.p.title : name;
     var url = fileUrl(node);
-    if (url) return '<a class="t-file" href="' + esc(url) + '">' + esc(name) + '</a>';
-    return '<span class="t-file">' + esc(name) + '</span>';
+    if (url) return '<a class="t-file" href="' + esc(url) + '">' + esc(label) + '</a>';
+    return '<span class="t-file">' + esc(label) + '</span>';
   }
 
   function cmdCd(args) {
@@ -390,6 +465,7 @@
     oldpwd = cwd;
     cwd = parts;
     renderPrompt();
+    saveSession();
   }
 
   function cmdPwd() { print(displayPath(cwd)); }
@@ -775,6 +851,7 @@
     }
     renderPrompt();
     scrollDown();
+    saveSession();
   }
 
   /* ---------------- tab completion ---------------- */
@@ -833,6 +910,7 @@
       inputEl.value = done + (isDir ? '' : ' ') + rest;
       inputEl.selectionStart = inputEl.selectionEnd = done.length + (isDir ? 0 : 1);
       renderInput();
+      saveSession();
       lastTab = 0;
       return;
     }
@@ -842,10 +920,12 @@
       inputEl.value = done2 + rest;
       inputEl.selectionStart = inputEl.selectionEnd = done2.length;
       renderInput();
+      saveSession();
     } else if (dbl) {
       echoLine(inputEl.value);
       print(cands.join('   '));
       scrollDown();
+      saveSession();
       lastTab = 0;
     }
   }
@@ -867,6 +947,7 @@
     } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
       e.preventDefault();
       outEl.innerHTML = '';
+      saveSession();
     } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
       if (window.getSelection && String(window.getSelection()).length) return; // allow copy
       e.preventDefault();
@@ -874,27 +955,35 @@
       inputEl.value = '';
       renderInput();
       scrollDown();
+      saveSession();
     } else if (e.ctrlKey && (e.key === 'd' || e.key === 'D')) {
       if (!inputEl.value) {
         e.preventDefault();
         cmdExit();
         scrollDown();
+        saveSession();
       }
     }
   });
-  inputEl.addEventListener('input', function () { lastTab = 0; renderInput(); });
+  inputEl.addEventListener('input', function () {
+    lastTab = 0;
+    renderInput();
+    saveSession();
+  });
   inputEl.addEventListener('keyup', function (e) {
     if (e.key && (e.key.indexOf('Arrow') === 0 || e.key === 'Home' || e.key === 'End' || e.key === 'Delete')) {
       renderInput();
+      saveSession();
     }
   });
-  inputEl.addEventListener('click', renderInput);
+  inputEl.addEventListener('click', function () { renderInput(); saveSession(); });
 
   term.addEventListener('click', function (e) {
-    if (e.target.tagName === 'A') return;
+    if (e.target.tagName === 'A') { saveSession(); return; }
     if (window.getSelection && String(window.getSelection()).length) return;
     inputEl.focus();
   });
+  window.addEventListener('pagehide', saveSession);
 
   /* ---------------- boot ---------------- */
   function boot(data) {
@@ -927,11 +1016,16 @@
     .then(function (data) {
       DATA = data;
       FS = buildFS(data);
-      outEl.innerHTML = '';
-      boot(data);
-      renderPrompt();
-      renderInput();
+      var restored = restoreSession(loadSession());
+      if (!restored) {
+        outEl.innerHTML = '';
+        boot(data);
+        renderPrompt();
+        renderInput();
+      }
+      sessionReady = true;
       inputEl.focus();
+      saveSession();
     })
     .catch(function (err) {
       print('kernel panic: 无法加载文件系统 (' + err.message + ')', 't-err');

@@ -1,0 +1,88 @@
+<%
+  const topic = bento_topic(page);
+  const categoryItems = page.categories && page.categories.toArray ? page.categories.toArray() : [];
+  const tagItems = page.tags && page.tags.toArray ? page.tags.toArray() : [];
+  const contents = toc(page.content, { list_number: false, max_depth: 3, class: 'toc' });
+  const hasContents = /<li\b/.test(contents);
+%>
+<div class="article-page">
+  <a class="article-back" href="<%- url_for('/archives/') %>"><span aria-hidden="true">←</span> 所有文章</a>
+
+  <header class="article-header">
+    <div class="article-kicker">
+      <a class="article-topic" href="<%- url_for('/archives/') %>?topic=<%= topic.key %>"><%= topic.label %></a>
+      <span class="article-kicker-line" aria-hidden="true"></span>
+      <span>FIELD NOTES</span>
+    </div>
+    <h1 class="article-title" id="article-title"><%= page.title %></h1>
+    <% if (page.description) { %><p class="article-description"><%= page.description %></p><% } %>
+    <div class="article-byline">
+      <span class="article-avatar" aria-hidden="true">L</span>
+      <span><%= page.author || config.author %></span>
+      <span class="article-meta-separator" aria-hidden="true">/</span>
+      <time datetime="<%= date_xml(page.date) %>"><%= date(page.date, 'YYYY.MM.DD') %></time>
+      <span class="article-meta-separator" aria-hidden="true">/</span>
+      <span>约 <%= bento_minutes(page) %> 分钟</span>
+    </div>
+  </header>
+
+  <div class="article-grid<%= hasContents ? '' : ' article-grid-no-toc' %>">
+    <article class="article-document h-entry">
+      <% if (hasContents) { %>
+        <details class="article-toc-mobile">
+          <summary>这篇文章的目录 <span aria-hidden="true">+</span></summary>
+          <nav aria-label="文章目录"><%- contents %></nav>
+        </details>
+      <% } %>
+
+      <div class="article-body e-content" id="article-content"><%- page.content %></div>
+
+      <footer class="article-end">
+        <div class="article-end-mark" aria-hidden="true"><span></span> END OF NOTE <span></span></div>
+        <% if (categoryItems.length || tagItems.length) { %>
+          <div class="article-taxonomy" aria-label="文章分类与标签">
+            <% categoryItems.forEach(function(category) { %>
+              <a class="article-tag article-tag-category" href="<%- url_for(category.path) %>"><%= category.name %></a>
+            <% }); %>
+            <% tagItems.forEach(function(tag) { %>
+              <a class="article-tag" href="<%- url_for(tag.path) %>"><span aria-hidden="true">#</span> <%= tag.name %></a>
+            <% }); %>
+          </div>
+        <% } %>
+        <div class="article-end-meta">
+          <span>写下思考，也留下继续探索的入口。</span>
+          <a href="#article-content">回到正文 <span aria-hidden="true">↑</span></a>
+        </div>
+      </footer>
+    </article>
+
+    <% if (hasContents) { %>
+      <aside class="article-sidebar">
+        <nav class="article-toc" aria-label="文章目录">
+          <p class="article-toc-label"><span aria-hidden="true">↳</span> ON THIS PAGE</p>
+          <%- contents %>
+          <a class="article-toc-top" href="#article-title">返回顶部 <span aria-hidden="true">↑</span></a>
+        </nav>
+      </aside>
+    <% } %>
+  </div>
+
+  <% if (page.prev || page.next) { %>
+    <nav class="article-pagination" aria-label="相邻文章">
+      <% if (page.prev) { %>
+        <a class="article-neighbor" href="<%- url_for(page.prev.path) %>">
+          <span class="article-neighbor-label"><span aria-hidden="true">↖</span> 较新的一篇</span>
+          <strong><%= page.prev.title %></strong>
+          <span class="article-neighbor-date"><%= date(page.prev.date, 'YYYY.MM.DD') %></span>
+        </a>
+      <% } %>
+      <% if (page.next) { %>
+        <a class="article-neighbor article-neighbor-next" href="<%- url_for(page.next.path) %>">
+          <span class="article-neighbor-label">较早的一篇 <span aria-hidden="true">↗</span></span>
+          <strong><%= page.next.title %></strong>
+          <span class="article-neighbor-date"><%= date(page.next.date, 'YYYY.MM.DD') %></span>
+        </a>
+      <% } %>
+    </nav>
+  <% } %>
+</div>

@@ -1,0 +1,20 @@
+<div class="article-page page-view">
+  <a class="article-back" href="<%- url_for('/') %>"><span aria-hidden="true">←</span> 回到首页</a>
+  <header class="article-header">
+    <div class="article-kicker"><span>ABOUT & MORE</span><span class="article-kicker-line" aria-hidden="true"></span><span><%= config.author %></span></div>
+    <h1 class="article-title"><%= page.title %></h1>
+  </header>
+  <div class="page-grid">
+    <article class="article-document">
+      <div class="article-body" id="article-content"><%- page.content %></div>
+    </article>
+    <aside class="page-connect" aria-label="更多入口">
+      <div class="page-connect-symbol" aria-hidden="true">L<span>↗</span></div>
+      <p class="page-connect-kicker">KEEP EXPLORING</p>
+      <h2>边学，边记录。</h2>
+      <p>网络、芯片、代码，还有一路遇到的问题。</p>
+      <a href="<%- url_for('/archives/') %>">翻翻技术笔记 <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/lipu0324" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a>
+    </aside>
+  </div>
+</div>

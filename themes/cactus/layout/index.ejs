@@ -8,6 +8,7 @@
 
 <noscript>
   <div class="term-noscript">
+    <p><a href="<%- url_for('/resume/') %>">resume.md · 个人简历</a></p>
     <p>终端需要启用 JavaScript。你也可以直接浏览全部文章：</p>
     <ul>
       <% site.posts.sort('date', 'desc').each(function(post) { %>

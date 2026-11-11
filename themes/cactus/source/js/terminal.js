@@ -108,6 +108,7 @@
     guest.c['tags'] = tags;
     guest.c['archives'] = arch;
     if (data.about) guest.c['about.md'] = vtext(data.about.content, data.about.url);
+    if (data.resume) guest.c['resume.md'] = vtext(data.resume.content, data.resume.url);
     guest.c['README.md'] = vtext(readmeText(data));
     guest.c['.secret'] = vtext(secretText(data));
 
@@ -128,6 +129,7 @@
       '  tags/         按标签浏览',
       '  archives/     按年份浏览',
       '  about.md      关于站长',
+      data.resume ? '  resume.md     个人简历（输入 resume 打开）' : '',
       '',
       '## 小贴士',
       '  · Tab 补全命令和路径，↑/↓ 翻阅历史，Ctrl+L 清屏',
@@ -397,7 +399,7 @@
       '    find [路径] [-name 模式]   按文件名查找，支持 * 通配',
       '',
       '  其他',
-      '    help / man    history    clear    about    neofetch',
+      '    help / man    history    clear    about    resume    neofetch',
       '    date    uptime    echo    wc    which    open    exit',
       '',
       '提示：Tab 补全，↑/↓ 历史，Ctrl+C 中断，Ctrl+L 清屏。'
@@ -742,6 +744,11 @@
     }
   }
 
+  function cmdResume() {
+    if (!DATA.resume) { print('resume: 暂无简历页面', 't-dim'); return; }
+    cmdOpen(['~/resume.md'], 'resume');
+  }
+
   function cmdExit() {
     print('logout');
     print('Connection to ' + HOST + ' closed.', 't-dim');
@@ -786,6 +793,7 @@
                   history.forEach(function (h, i) { print(padL(i + 1, 5) + '  ' + h); });
                 }, usage: 'history', desc: '查看历史指令' },
     about:    { fn: cmdAbout,     usage: 'about',           desc: '关于站长' },
+    resume:   { fn: cmdResume,    usage: 'resume',          desc: '打开个人简历（也可 less ~/resume.md）' },
     neofetch: { fn: cmdNeofetch,  usage: 'neofetch',        desc: '显示站点信息' },
     date:     { fn: function () { print(new Date().toString()); }, usage: 'date', desc: '显示当前时间' },
     uptime:   { fn: cmdUptime,    usage: 'uptime',          desc: '站点运行时间' },
@@ -998,6 +1006,7 @@
     printHTML('欢迎来到 <b>' + esc(data.site.title) + '</b>' +
       (data.site.subtitle ? ' — ' + esc(data.site.subtitle) : ''));
     printHTML('<span class="t-dim">传统入口：<a href="/archives/">/archives/</a> · <a href="/about/">/about/</a> · <a href="https://github.com/lipu0324">github</a></span>');
+    if (data.resume) printHTML('<span class="t-dim">个人简历：<a href="' + esc(data.resume.url) + '">resume.md</a> · 输入 resume 或 less ~/resume.md</span>');
     print('输入 help 查看全部指令。快速上手：');
     printHTML('  <span class="t-dim">$</span> ls posts/              <span class="t-dim"># 列出全部文章</span>');
     printHTML('  <span class="t-dim">$</span> grep -i cuda posts/    <span class="t-dim"># 全文搜索</span>');

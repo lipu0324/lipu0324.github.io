@@ -1,0 +1,24 @@
+<main class="pager resume-shell" id="resume-top">
+  <div class="resume-toolbar">
+    <div class="resume-command"><span class="p-arrow" aria-hidden="true">➜</span> <span class="p-path">~</span> <span class="p-git">git:(<span class="p-branch">main</span>)</span> less resume.md<span class="resume-cursor" aria-hidden="true">&nbsp;</span></div>
+    <div class="resume-actions">
+      <a href="<%- url_for('/') %>">[ 返回终端 ]</a>
+      <a href="<%- url_for(page.pdf) %>" download="吴宗璞-简历.pdf">[ 下载 PDF ↓ ]</a>
+    </div>
+  </div>
+  <p class="resume-loaded"><span>[ OK ]</span> resume.md loaded <span class="resume-readonly">/ read-only</span></p>
+  <nav class="resume-nav" aria-label="简历章节">
+    <%- toc(page.content, {min_depth: 2, max_depth: 2, list_number: false}) %>
+  </nav>
+  <article class="resume-document" aria-label="吴宗璞的个人简历">
+    <div class="e-content"><%- page.content %></div>
+    <div class="resume-eof"><span>[ EOF ]</span> <a href="#resume-top">回到顶部 ↑</a></div>
+  </article>
+</main>
+<div class="pager-status" id="pager-status">
+  <span class="pager-left"><span id="pager-file">resume.md</span><span id="pager-pos"></span></span>
+  <span class="pager-hint">q 返回 · / 搜索 · n/N 切换 · j/k 滚动</span>
+  <span class="pager-search" id="pager-search-wrap">/<input id="pager-search" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="搜索简历" /></span>
+</div>
+<script>window.__LIPU_PAGER__ = { home: '<%- url_for('/') %>' };</script>
+<script src="<%- url_for('/js/pager.js') %>"></script>

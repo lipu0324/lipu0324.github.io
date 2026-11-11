@@ -71,7 +71,7 @@ async function waitFor(predicate) {
   throw new Error('terminal did not finish initializing');
 }
 
-async function startTerminal(savedState) {
+async function startTerminal(savedState, data = DATA) {
   const dom = new JSDOM(TERMINAL_HTML, {
     url: 'https://example.test/',
     runScripts: 'outside-only',
@@ -85,7 +85,7 @@ async function startTerminal(savedState) {
     value: 0
   });
   window.scrollTo = (_x, y) => { window.scrollY = y; };
-  window.fetch = async () => ({ ok: true, json: async () => DATA });
+  window.fetch = async () => ({ ok: true, json: async () => data });
   window.__LIPU_TERM__ = { fs: '/fs.json' };
   if (savedState !== undefined && savedState !== null) {
     window.sessionStorage.setItem(STATE_KEY, savedState);
@@ -156,5 +156,42 @@ test('terminal state survives leaving and returning in the same tab', async () =
 test('a fresh tab still shows the normal boot screen', async () => {
   const page = await startTerminal();
   assert.match(page.output.textContent, /欢迎来到/);
+  page.dom.window.close();
+});
+
+const WITH_RESUME = {
+  ...DATA,
+  resume: {
+    name: 'resume.md',
+    url: '/resume/',
+    content: 'Resume Test Name\nEducation\nFPGA and distributed systems'
+  }
+};
+
+test('resume is discoverable, readable, and included in shell path completion', async () => {
+  const page = await startTerminal(undefined, WITH_RESUME);
+  assert.equal(page.output.querySelector('a[href="/resume/"]').textContent, 'resume.md');
+  submit(page, 'ls');
+  assert.match(page.output.textContent, /resume\.md/);
+  submit(page, 'cat resume.md');
+  assert.match(page.output.textContent, /Resume Test Name\nEducation\nFPGA/);
+
+  type(page, 'less res', 8);
+  page.input.dispatchEvent(new page.window.KeyboardEvent('keydown', {
+    key: 'Tab', bubbles: true, cancelable: true
+  }));
+  assert.equal(page.input.value.trim(), 'less resume.md');
+  page.dom.window.close();
+});
+
+test('resume command opens the resume even from a post directory and saves the session', async () => {
+  const page = await startTerminal(undefined, WITH_RESUME);
+  submit(page, 'cd posts');
+  submit(page, 'resume');
+  assert.match(page.output.textContent, /Opening \/resume\//);
+  assert.equal(page.output.querySelector('a[href="/resume/"]').pathname, '/resume/');
+  const saved = JSON.parse(page.window.sessionStorage.getItem(STATE_KEY));
+  assert.deepEqual(saved.cwd, ['home', 'guest', 'posts']);
+  assert.match(saved.output, /Opening \/resume\//);
   page.dom.window.close();
 });

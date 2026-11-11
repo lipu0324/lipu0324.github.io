@@ -1,0 +1,305 @@
+// Resume uses the same shell palette and pager controls as the blog.
+body.is-resume
+  max-width: none
+  padding: 0
+  background: $term-bg
+  background-image: none
+
+  > .content
+    padding: 0
+
+  #footer
+    display: none
+
+.resume-shell
+  max-width: 1040px
+  min-height: 100dvh
+  padding: 26px 38px 92px
+  font-size: 15px
+  line-height: 1.9
+
+  ::selection
+    background: rgba(88, 166, 255, .32)
+    color: #fff
+
+  a
+    background: none
+    color: $term-cyan
+    text-shadow: none
+    text-decoration: underline
+    text-underline-offset: 4px
+    text-decoration-color: #3b555e
+
+    &:hover
+      background: none
+      color: $term-blue
+      text-shadow: none
+      text-decoration-color: currentColor
+
+    &:focus-visible
+      outline: 2px solid $term-cyan
+      outline-offset: 5px
+
+.resume-toolbar
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  justify-content: space-between
+  gap: 12px 24px
+  font-size: 12px
+
+.resume-command
+  white-space: nowrap
+
+.resume-actions
+  display: flex
+  flex-wrap: wrap
+  gap: 8px 20px
+
+  a
+    padding: 6px 0
+    text-decoration: none
+
+.resume-cursor
+  display: inline-block
+  width: .6em
+  margin-left: 6px
+  background: $term-fg
+  line-height: 1.2
+  vertical-align: baseline
+
+.resume-loaded
+  margin: 14px 0 25px
+  color: $term-dim
+  font-size: 11px
+
+  > span:first-child
+    color: $term-green
+
+.resume-readonly
+  margin-left: 8px
+
+.resume-nav
+  position: sticky
+  top: 0
+  z-index: 10
+  margin-bottom: 38px
+  padding: 10px 0
+  border-top: 1px solid #30363d
+  border-bottom: 1px solid #30363d
+  background: $term-bg
+
+  .toc
+    display: flex
+    flex-wrap: wrap
+    gap: 4px 22px
+    margin: 0
+    padding: 0
+    list-style: none
+
+  a
+    display: inline-block
+    padding: 4px 0
+    color: $term-dim
+    font-size: 12px
+    text-decoration: none
+
+    &:before
+      content: "./"
+      color: $term-cyan
+
+.resume-document
+  p
+    margin: 12px 0
+    text-align: left
+    text-wrap: pretty
+
+  h1, h2, h3, h4
+    font-family: $font-family-mono
+    text-wrap: balance
+
+  h1
+    margin: 6px 0 8px
+    color: #f0f6fc
+    font-size: 40px
+    line-height: 1.4
+
+  h2
+    margin: 44px 0 22px
+    padding-bottom: 10px
+    border-bottom: 1px dashed #30363d
+    color: $term-cyan
+    font-size: 19px
+    scroll-margin-top: 100px
+
+    &:before
+      content: "## "
+      color: #62747e
+
+  h3
+    margin: 28px 0 5px
+    color: #f0f6fc
+    font-size: 16px
+    text-decoration: none
+
+  h4
+    margin: 24px 0 10px
+    color: $term-blue
+    font-size: 14px
+
+  strong
+    color: #f0f6fc
+    font-weight: 600
+
+  ul
+    margin: 12px 0 22px
+    padding-left: 22px
+    list-style: disc
+
+  li
+    margin: 7px 0
+    padding-left: 3px
+
+    &::marker
+      color: #62747e
+
+  .resume-label
+    margin: 0
+    color: $term-cyan
+    font-size: 11px
+
+  .resume-role
+    margin: 7px 0 22px
+    color: $term-dim
+    font-size: 14px
+
+  .resume-contacts
+    display: grid
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+    gap: 8px 28px
+    margin: 0
+    padding: 18px 0
+    border-top: 1px solid #21262d
+    border-bottom: 1px solid #21262d
+    list-style: none
+    font-size: 12px
+
+    li
+      display: grid
+      grid-template-columns: 64px minmax(0, 1fr)
+      gap: 9px
+      margin: 0
+      padding: 0
+      overflow-wrap: anywhere
+
+    span
+      color: $term-dim
+
+  .resume-period
+    margin: 0 0 15px
+    color: $term-dim
+    font-size: 12px
+    font-variant-numeric: tabular-nums
+
+  .resume-stack
+    margin: 14px 0
+    color: $term-cyan
+    font-size: 12px
+
+.resume-eof
+  display: flex
+  justify-content: space-between
+  margin-top: 44px
+  padding-top: 16px
+  border-top: 1px solid #30363d
+  color: $term-dim
+  font-size: 12px
+
+@media (prefers-reduced-motion: no-preference)
+  .resume-loaded
+    animation: resume-enter 180ms ease-out both
+
+  .resume-identity
+    animation: resume-enter 180ms 60ms ease-out both
+
+  .resume-cursor
+    animation: resume-blink 1s step-end 4
+
+@keyframes resume-enter
+  from
+    opacity: .65
+    transform: translateY(4px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+@keyframes resume-blink
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0
+
+@media (max-width: 640px)
+  .resume-shell
+    padding: 18px 18px 82px
+    font-size: 14px
+
+  .resume-toolbar
+    font-size: 11px
+
+  .resume-nav
+    margin-bottom: 28px
+
+    .toc
+      gap: 2px 16px
+
+    a
+      font-size: 11px
+
+  .resume-document
+    h1
+      font-size: 32px
+
+    h2
+      font-size: 17px
+
+    h3
+      font-size: 15px
+
+    .resume-contacts
+      grid-template-columns: 1fr
+
+body.is-resume .pager-status
+  padding-bottom: calc(5px + env(safe-area-inset-bottom))
+
+@media print
+  body.is-resume
+    background: #fff
+    color: #111
+    height: auto
+
+    .resume-toolbar, .resume-loaded, .resume-nav, .pager-status, .resume-eof
+      display: none
+
+    .resume-shell
+      max-width: none
+      min-height: 0
+      padding: 0
+      color: #111
+      font-size: 10pt
+
+    .resume-document
+      h1, h2, h3, h4, strong, a, p, li, span
+        color: #111
+
+      h2, h3, h4
+        break-after: avoid
+
+      h2
+        margin-top: 20px
+
+      a
+        text-decoration: none
+
+      .resume-identity, .resume-loaded, .resume-cursor
+        animation: none

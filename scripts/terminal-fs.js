@@ -87,10 +87,18 @@ hexo.extend.generator.register('terminal_fs', function (locals) {
   });
 
   let about = null;
+  let resume = null;
   locals.pages.forEach(function (page) {
     if (!about && page.path && page.path.indexOf('about/') === 0) {
       about = {
         name: 'about.md',
+        url: root + page.path.replace(/index\.html$/, ''),
+        content: stripMarkdown(getRaw(page))
+      };
+    }
+    if (!resume && page.type === 'resume') {
+      resume = {
+        name: 'resume.md',
         url: root + page.path.replace(/index\.html$/, ''),
         content: stripMarkdown(getRaw(page))
       };
@@ -107,7 +115,8 @@ hexo.extend.generator.register('terminal_fs', function (locals) {
       url: (hexo.config.url || '').replace(/\/$/, '')
     },
     posts: posts,
-    about: about
+    about: about,
+    resume: resume
   };
 
   return { path: 'fs.json', data: JSON.stringify(payload) };

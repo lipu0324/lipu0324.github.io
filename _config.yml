@@ -86,6 +86,7 @@ theme_config:
   nav:
     home: /
     about: /about/
+    resume: /resume/
     articles: /archives/
     github: https://github.com/lipu0324
   social_links:

@@ -1,0 +1,60 @@
+<%
+  const archivePosts = bento_archive_posts(page);
+  const currentPosts = page.posts && typeof page.posts.toArray === 'function' ? page.posts.toArray() : (page.posts || []);
+  const topics = bento_topics();
+  const currentPage = page.current || 1;
+  const pageCount = page.total || 1;
+  let scopeLabel = '';
+  if (page.category) scopeLabel = '分类 / ' + page.category;
+  else if (page.tag) scopeLabel = '标签 / ' + page.tag;
+  else if (page.year) scopeLabel = [page.year, page.month ? String(page.month).padStart(2, '0') : '', page.day ? String(page.day).padStart(2, '0') : ''].filter(Boolean).join(' / ');
+%>
+<section class="archive-page" data-archive-page data-search-index="<%- url_for('bento-search.json') %>" data-archive-category="<%= page.category || '' %>" data-archive-tag="<%= page.tag || '' %>" data-archive-year="<%= page.year || '' %>" data-archive-month="<%= page.month || '' %>" data-archive-day="<%= page.day || '' %>">
+  <header class="archive-header">
+    <p class="eyebrow">THE NOTEBOOK</p>
+    <h1>文章 <span class="archive-title-divider">/</span> <span class="archive-title-en">All notes</span></h1>
+    <p class="archive-intro">关于网络、硬件与代码的学习记录。</p>
+    <% if (scopeLabel) { %>
+      <div class="archive-scope"><span><%= scopeLabel %></span><a href="<%- url_for(config.archive_dir + '/') %>">查看全部文章 <span aria-hidden="true">↗</span></a></div>
+    <% } %>
+  </header>
+
+  <div class="archive-toolbar">
+    <label class="archive-search">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg>
+      <input type="search" data-archive-search placeholder="搜索文章、标签或关键词…" aria-label="搜索文章、标签或关键词" autocomplete="off">
+    </label>
+    <div class="archive-topics" role="group" aria-label="按主题筛选">
+      <button type="button" class="archive-topic is-active" data-archive-topic="all" aria-pressed="true">全部 <span class="archive-topic-count"><%= archivePosts.length %></span></button>
+      <% topics.forEach(function(topic) { const count = archivePosts.filter(function(post) { return bento_topic(post).key === topic.key; }).length; %>
+        <button type="button" class="archive-topic" data-archive-topic="<%= topic.key %>" aria-pressed="false"><%= topic.label %> <span class="archive-topic-count"><%= count %></span></button>
+      <% }); %>
+    </div>
+  </div>
+
+  <p class="archive-results-count" data-archive-count aria-live="polite" aria-atomic="true">共 <%= archivePosts.length %> 篇文章<% if (pageCount > 1) { %> · 第 <%= currentPage %> / <%= pageCount %> 页<% } %></p>
+  <ol class="archive-list" data-archive-list>
+    <% currentPosts.forEach(function(post) { const topic = bento_topic(post); const excerpt = bento_text(post, 100); const search = [post.title, topic.label, bento_names(post.tags).join(' '), bento_names(post.categories).join(' '), excerpt].join(' '); %>
+      <li class="archive-item" data-entry data-topic="<%= topic.key %>" data-search="<%= search %>">
+        <a class="archive-item-link" href="<%- url_for(post.path) %>">
+          <div class="archive-item-body">
+            <div class="archive-meta"><span class="topic-label topic-<%= topic.key %>"><%= topic.label %></span><span aria-hidden="true">·</span><span><%= bento_minutes(post) %> 分钟阅读</span></div>
+            <h2 class="archive-item-title"><%= post.title || '未命名文章' %></h2>
+            <p class="archive-excerpt"><%= excerpt %></p>
+          </div>
+          <div class="archive-item-end"><time class="archive-date" datetime="<%= date(post.date, 'YYYY-MM-DD') %>"><%= date(post.date, 'YYYY.MM.DD') %></time><span class="archive-arrow" aria-hidden="true">↗</span></div>
+        </a>
+      </li>
+    <% }); %>
+  </ol>
+  <p class="archive-empty" data-archive-empty<% if (currentPosts.length) { %> hidden<% } %>>没有找到相关文章。试试其他关键词或分类。</p>
+
+  <% if (pageCount > 1) { %>
+    <nav class="pagination archive-pagination" data-archive-pagination aria-label="文章分页">
+      <% if (page.prev) { %><a class="pagination-prev" href="<%- url_for(page.prev_link) %>" rel="prev">← 上一页</a><% } else { %><span></span><% } %>
+      <span class="pagination-current" aria-label="第 <%= currentPage %> 页，共 <%= pageCount %> 页"><%= currentPage %> / <%= pageCount %></span>
+      <% if (page.next) { %><a class="pagination-next" href="<%- url_for(page.next_link) %>" rel="next">下一页 →</a><% } else { %><span></span><% } %>
+    </nav>
+  <% } %>
+</section>
+<script src="<%- url_for('js/archive.js') %>" defer></script>

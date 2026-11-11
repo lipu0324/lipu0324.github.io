@@ -73,7 +73,7 @@ include:
 exclude:
 ignore:
 
-theme: cactus
+theme: bento
 
 theme_config:
   colorscheme: trm

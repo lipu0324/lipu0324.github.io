@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title><%= page.title ? page.title + ' · ' + config.title : config.title %></title>
+  <meta name="description" content="<%= page.content ? bento_text(page, 150) : config.description %>">
+  <link rel="canonical" href="<%= full_url_for(page.path || '/') %>">
+  <link rel="icon" type="image/svg+xml" href="<%= url_for('/images/favicon.svg') %>">
+  <meta name="theme-color" content="#f5f5f3">
+  <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('lipu-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
+  <%- css('css/style.css') %>
+  <% if (is_home()) { %><%- css('css/fabric.css') %><% } %>
+  <% if (!is_home()) { %><%- css('css/article.css') %><% } %>
+  <% if (is_archive() || is_tag() || is_category()) { %><%- css('css/archive.css') %><% } %>
+</head>
+<body class="<%= is_home() ? 'is-home' : (is_post() ? 'is-post' : 'is-inner') %>" data-search-index="<%= url_for('/bento-search.json') %>">
+  <a class="skip-link" href="#main-content">跳到内容</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="<%= url_for('/') %>" aria-label="lipu0324 首页">lipu<span>.</span></a>
+    <nav class="main-nav" aria-label="主导航">
+      <a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>首页</a>
+      <a href="<%= url_for('/archives/') %>" <%- is_archive() || is_tag() || is_category() || is_post() ? 'aria-current="page"' : '' %>>文章</a>
+      <a href="<%= url_for('/about/') %>" <%- page.path && page.path.indexOf('about/') === 0 ? 'aria-current="page"' : '' %>>关于</a>
+    </nav>
+    <div class="header-actions">
+      <button class="search-trigger js-only" type="button" data-open-search aria-label="搜索文章">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 4.5 4.5"/></svg>
+        <span>搜索</span><kbd class="shortcut-hint">⌘ K</kbd>
+      </button>
+      <button class="icon-button theme-toggle js-only" data-toggle-theme type="button" aria-label="切换到深色模式" title="切换配色">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.1 14.3A8.5 8.5 0 0 1 9.7 3.9a8.5 8.5 0 1 0 10.4 10.4Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3.8"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </header>
+  <main class="wrap" id="main-content"><%- body %></main>
+  <footer class="site-footer wrap">
+    <a class="footer-mark" href="<%= url_for('/') %>">lipu.</a>
+    <p>写下来，慢慢想明白。<span>© <%= new Date().getFullYear() %> <%= config.author %></span></p>
+    <a href="https://github.com/lipu0324" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    <a class="back-top" href="#" aria-label="回到顶部">↑</a>
+  </footer>
+  <dialog class="search-dialog" id="search-dialog" aria-labelledby="search-heading">
+    <div class="search-dialog-header"><h2 id="search-heading">搜索笔记</h2><button class="icon-button" type="button" data-close-search aria-label="关闭搜索">×</button></div>
+    <label class="sr-only" for="site-search">文章标题、标签或关键词</label>
+    <input id="site-search" type="search" placeholder="试试 RDMA、CUDA、Agent…" autocomplete="off" spellcheck="false">
+    <p class="search-status" data-search-status role="status">输入关键词，寻找一篇笔记。</p>
+    <ul class="search-results" data-search-results></ul>
+    <div class="search-dialog-footer"><span>标题 · 标签 · 摘要</span><span><kbd>esc</kbd> 关闭</span></div>
+  </dialog>
+  <dialog class="image-dialog" id="image-dialog" aria-label="图片预览"><button class="icon-button" type="button" data-close-image aria-label="关闭图片预览">×</button><img alt=""><p></p></dialog>
+  <script src="<%= url_for('/js/site.js') %>" defer></script>
+  <% if (is_home()) { %><script src="<%= url_for('/js/fabric.js') %>" defer></script><% } %>
+</body>
+</html>

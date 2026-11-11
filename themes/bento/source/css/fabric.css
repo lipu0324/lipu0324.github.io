@@ -1,0 +1,204 @@
+.fabric-card {
+  overflow: hidden;
+  background: var(--surface, #fff);
+}
+
+.fabric {
+  --fabric-route: #a8a9bc;
+  --fabric-flow: #6a66cc;
+  --fabric-grid-color: #d3d2df;
+  --fabric-board: #e9e9ef;
+  --fabric-board-left: #c9cbd8;
+  --fabric-board-right: #d9dae3;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 27px 28px 23px;
+}
+
+.fabric-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  gap: 16px;
+}
+
+.fabric-eyebrow {
+  margin: 0 0 10px;
+  color: var(--muted, #787b85);
+  font: 500 10px/1.4 var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+  letter-spacing: .13em;
+}
+
+.fabric-heading h2 {
+  margin: 0;
+  color: var(--ink, #292b34);
+  font-size: clamp(20px, 2.2vw, 27px);
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -.045em;
+}
+
+.fabric-heading h2 span { color: #8682cb; }
+
+.fabric-motion {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  margin-top: 2px;
+  padding: 0;
+  border: 1px solid var(--line, #ececf0);
+  border-radius: 50%;
+  color: var(--muted, #787b85);
+  background: transparent;
+  cursor: pointer;
+  transition: color .18s, background .18s, border-color .18s;
+}
+
+.fabric-motion:hover {
+  color: var(--ink, #292b34);
+  background: var(--paper, #f4f3ef);
+}
+
+.fabric-motion:focus-visible {
+  outline: 3px solid var(--accent, #6a66cc);
+  outline-offset: 4px;
+}
+
+.fabric-motion svg { width: 15px; height: 15px; }
+.fabric-play-icon { display: none; }
+.fabric[data-running="false"] .fabric-pause-icon { display: none; }
+.fabric[data-running="false"] .fabric-play-icon { display: block; }
+
+.fabric-scene {
+  display: block;
+  width: calc(100% + 32px);
+  height: auto;
+  min-height: 215px;
+  margin: auto -16px;
+  flex: 1 1 auto;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fabric-floor { fill: #fafafd; fill-opacity: .8; }
+.fabric-floor-grid { color: var(--fabric-grid-color); opacity: .55; }
+.fabric-floor-outline { stroke: var(--fabric-grid-color); stroke-opacity: .42; }
+.fabric-route-bed { stroke: #fff; stroke-width: 7; stroke-linecap: round; }
+.fabric-route-line { stroke: var(--fabric-route); stroke-width: 1.4; stroke-linecap: round; }
+.fabric-route { opacity: .48; transition: opacity .3s; }
+.fabric-packet { fill: var(--fabric-flow); stroke: none; }
+.fabric-packet-halo { fill-opacity: .13; }
+.fabric-packet-secondary { fill-opacity: .6; }
+.fabric[data-active="01"] [data-fabric-route="01"],
+.fabric[data-active="02"] [data-fabric-route="02"],
+.fabric[data-active="03"] [data-fabric-route="03"],
+.fabric[data-active="04"] [data-fabric-route="04"] { opacity: 1; }
+.fabric[data-active="01"] [data-fabric-route="01"] .fabric-route-line,
+.fabric[data-active="02"] [data-fabric-route="02"] .fabric-route-line,
+.fabric[data-active="03"] [data-fabric-route="03"] .fabric-route-line,
+.fabric[data-active="04"] [data-fabric-route="04"] .fabric-route-line { stroke: var(--fabric-flow); stroke-width: 1.7; }
+
+.fabric-hub-shadow { fill: #a8a9c4; opacity: .4; }
+.fabric-base-top { fill: var(--fabric-board); stroke: #fdfdff; stroke-width: 1; }
+.fabric-base-left { fill: var(--fabric-board-left); }
+.fabric-base-right { fill: var(--fabric-board-right); }
+.fabric-board-line { stroke: #c8c9da; stroke-width: .7; }
+.fabric-pins { stroke: #8d91ae; }
+.fabric-chip-top { fill: #45475f; stroke: #74778f; stroke-width: 1; }
+.fabric-chip-left { fill: #292c41; }
+.fabric-chip-right { fill: #383b51; }
+.fabric-chip-detail { stroke: #777c9c; stroke-width: .7; }
+.fabric-chip-label {
+  fill: #f5f4ff;
+  font: 500 10px var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+  letter-spacing: 1.8px;
+}
+.fabric-chip-dot { fill: #c1e5ca; }
+
+.fabric-node { cursor: pointer; outline: none; }
+.fabric-node--mint { --fabric-node-color: #d8e9df; --fabric-node-edge: #adc5b7; --fabric-node-accent: #7eaa91; }
+.fabric-node--lavender { --fabric-node-color: #e0ddf3; --fabric-node-edge: #bbb5da; --fabric-node-accent: #a39cc9; }
+.fabric-node--blue { --fabric-node-color: #dce6f4; --fabric-node-edge: #b3c4df; --fabric-node-accent: #91aacc; }
+.fabric-node--peach { --fabric-node-color: #f2e2d6; --fabric-node-edge: #dbc2ad; --fabric-node-accent: #cba584; }
+.fabric-node-shadow { fill: #bbbcd1; opacity: .18; }
+.fabric-node-ring { stroke: var(--fabric-flow); stroke-width: var(--fabric-ring-width, 1.5px); opacity: var(--fabric-ring-opacity, 0); transition: opacity .2s; }
+.fabric-node-top { fill: var(--fabric-node-color); stroke: #fff; stroke-opacity: .9; stroke-width: .8; }
+.fabric-node-left { fill: var(--fabric-node-edge); }
+.fabric-node-right { fill: var(--fabric-node-color); filter: brightness(.94); }
+.fabric-node-chip { fill: #fff; fill-opacity: .38; stroke: var(--fabric-node-accent); stroke-width: .8; }
+.fabric-node-traces { stroke: var(--fabric-node-accent); opacity: .5; }
+.fabric-node-pin { stroke: #fff; stroke-opacity: .85; }
+.fabric-node-led { fill: #fcfffd; }
+.fabric-node-label {
+  fill: var(--muted, #787b85);
+  font: 400 8px var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+  letter-spacing: 1px;
+}
+.fabric-node-lift { transform: translateY(var(--fabric-lift, 0px)); transition: transform .22s ease; }
+.fabric-node:hover,
+.fabric-node:focus-visible { --fabric-lift: -4px; }
+.fabric-node:hover { --fabric-ring-opacity: .35; }
+.fabric-node[aria-pressed="true"] { --fabric-ring-opacity: .65; }
+.fabric-node:focus-visible { --fabric-ring-opacity: 1; --fabric-ring-width: 2.5px; }
+.fabric-node[aria-pressed="true"] .fabric-node-label { fill: var(--ink, #292b34); font-weight: 600; }
+
+.fabric-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 8px;
+  color: var(--muted, #787b85);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.fabric-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 400 9px/1.5 var(--font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+  letter-spacing: .02em;
+}
+.fabric-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #9293c6; box-shadow: 0 0 0 3px #9293c612; }
+.fabric[data-running="false"] .fabric-live-dot { background: var(--muted, #787b85); box-shadow: none; }
+.fabric-hint span { margin-left: 3px; color: var(--ink, #292b34); }
+
+html[data-theme="dark"] .fabric {
+  --fabric-route: #686b84;
+  --fabric-flow: #b2acf4;
+  --fabric-grid-color: #505269;
+  --fabric-board: #45485c;
+  --fabric-board-left: #2b2d40;
+  --fabric-board-right: #35384c;
+}
+html[data-theme="dark"] .fabric-floor { fill: #282a38; fill-opacity: .7; }
+html[data-theme="dark"] .fabric-floor-grid { opacity: .4; }
+html[data-theme="dark"] .fabric-route-bed { stroke: #282a38; }
+html[data-theme="dark"] .fabric-base-top { stroke: #676b83; }
+html[data-theme="dark"] .fabric-board-line { stroke: #777b96; }
+html[data-theme="dark"] .fabric-hub-shadow { fill: #0b0d18; opacity: .65; }
+html[data-theme="dark"] .fabric-node-top { stroke: #ebe7fd; stroke-opacity: .3; }
+html[data-theme="dark"] .fabric-node--mint { --fabric-node-color: #98b4a4; --fabric-node-edge: #627f6f; --fabric-node-accent: #5e8270; }
+html[data-theme="dark"] .fabric-node--lavender { --fabric-node-color: #aaa3d1; --fabric-node-edge: #787098; --fabric-node-accent: #746991; }
+html[data-theme="dark"] .fabric-node--blue { --fabric-node-color: #9baecb; --fabric-node-edge: #667b9d; --fabric-node-accent: #657b9d; }
+html[data-theme="dark"] .fabric-node--peach { --fabric-node-color: #c4aa94; --fabric-node-edge: #94765f; --fabric-node-accent: #91735a; }
+
+@media (max-width: 600px) {
+  .fabric { padding: 23px 22px 20px; }
+  .fabric-heading h2 { font-size: 23px; }
+  .fabric-scene { min-height: 200px; margin-top: 0; margin-bottom: 0; }
+  .fabric-caption { gap: 8px; padding-top: 5px; }
+  .fabric-hint { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fabric-node-lift, .fabric-node-ring, .fabric-route, .fabric-motion { transition: none; }
+  .fabric:not([data-user-motion="true"]) .fabric-packet { visibility: hidden; }
+}
